@@ -1,0 +1,63 @@
+# ---------------------------------------------------------- #
+#  Python                                                    #
+# ---------------------------------------------------------- #
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+wheels/
+*.egg-info/
+*.egg
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ---------------------------------------------------------- #
+#  Ambientes virtuais                                        #
+# ---------------------------------------------------------- #
+.venv/
+venv/
+env/
+ENV/
+
+# ---------------------------------------------------------- #
+#  Jupyter / IPython                                         #
+# ---------------------------------------------------------- #
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+.jupyter/
+
+# ---------------------------------------------------------- #
+#  Dados (não versionar datasets pesados)                    #
+# ---------------------------------------------------------- #
+data/raw/*
+data/processed/*
+data/external/*
+aulas/**/dados/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/external/.gitkeep
+!aulas/**/dados/.gitkeep
+
+# ---------------------------------------------------------- #
+#  Editores e SO                                             #
+# ---------------------------------------------------------- #
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ---------------------------------------------------------- #
+#  Segredos                                                  #
+# ---------------------------------------------------------- #
+.env
+.env.*
+!.env.example
