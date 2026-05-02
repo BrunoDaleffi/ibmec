@@ -1,15 +1,17 @@
 # ruff: noqa: E501
 """Gera o pptx de Aula 2 · Bloco 1 — O Ciclo da Ciência de Dados (Parte 1).
 
-Lê /tmp/deck_aula2_bloco1/ (já desempacotado pelo unpack_pptx.py) e:
-1. Sobrescreve slide1.xml com a capa do bloco.
-2. Cria slide3..slide39 com cada layout customizado (39 slides no total).
-3. Atualiza .rels (rId3 -> image1.png ou image2.png).
-4. Atualiza [Content_Types].xml com Override para cada slideN.
-5. Atualiza ppt/_rels/presentation.xml.rels com Relationship para cada slide.
-6. Substitui o <p:sldIdLst> em ppt/presentation.xml na ordem desejada.
+Layout canônico replicado da Aula 1 publicada (ver
+`.cursor/skills/build-aula-pptx/layout-canonical.md`).
 
-Não cria notesSlides (notas ficam para próxima iteração).
+Convenção de fundos:
+- image1.png → capa, transição de tópico (01, 02, …) e encerramento ("Fim do Bloco N").
+- image2.png → todos os demais slides (agenda, objetivos, conexão, conteúdo,
+  síntese, ponte, referências, slides de correção).
+
+O `layout.pptx` original tem o mapeamento invertido (`slide1.xml`→`image2.png`,
+`slide2.xml`→`image1.png`); este script grava `slideN.xml.rels` apontando
+diretamente para a mídia correta.
 
 Pré-requisito: rodar antes
     uv run python .cursor/skills/build-aula-pptx/scripts/unpack_pptx.py \
@@ -54,22 +56,51 @@ TREE_OPEN = (
 )
 TREE_CLOSE = "</p:spTree></p:cSld>"
 
+# Paleta canônica
 NAVY = "1B2A4A"
 YELLOW = "E8A317"
 GREY = "666666"
 TEXT = "333333"
 LIGHT = "F4F4F4"
+PASTEL = "FCE5CD"
 WHITE = "FFFFFF"
+
+# Cabeçalho padrão da Aula 1 (slides estruturais)
+H1_X = 750000
+H1_Y = 500000
+H1_W = 5950000
+H1_H = 900000
+H1_SZ = 2400
+
+FAIXA_X = 750005
+FAIXA_Y = 905100
+FAIXA_W = 1500000
+FAIXA_H = 54900
+
+SUB_X = 750000
+SUB_Y = 1330000
+SUB_W = 5950000
+SUB_H = 400000
+SUB_SZ = 1400
 
 CONTENT_X_MIN = 750000
 CONTENT_X_MAX = 6700000
-CONTENT_W = CONTENT_X_MAX - CONTENT_X_MIN
-CONTENT_Y_MIN = 600000
+CONTENT_W = CONTENT_X_MAX - CONTENT_X_MIN  # 5950000
+CONTENT_Y_MIN = 1700000
 CONTENT_Y_MAX = 4500000
+
+# Eixo de capa, transição e encerramento (alinhado à área branca específica)
+HERO_X = 1097275
+END_X = 822950
 
 
 def esc(s: str) -> str:
     return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+# ---------------------------------------------------------------------------
+# Primitivas de forma
+# ---------------------------------------------------------------------------
 
 
 def text_box(
@@ -87,7 +118,6 @@ def text_box(
     line_spc: int = 100000,
     para_spc_before: int = 0,
 ) -> str:
-    """`runs` é uma lista de dicts: {text, sz, b, i, color, font}."""
     bul = ""
     if bullet:
         bul = (
@@ -151,7 +181,6 @@ def multi_para_box(
     line_spc: int = 110000,
     para_spc_before: int = 400,
 ) -> str:
-    """Cada parágrafo é uma lista de runs."""
     bul = ""
     if bullet:
         bul = (
@@ -321,16 +350,57 @@ def ellipse(
     )
 
 
-def title_box(sp_id: int, text: str) -> str:
-    return text_box(
-        sp_id,
-        CONTENT_X_MIN,
-        650000,
-        CONTENT_W,
-        850000,
-        [{"text": text, "sz": 2400, "b": True, "color": NAVY, "font": "Arial Black"}],
-        align="l",
+# ---------------------------------------------------------------------------
+# Cabeçalho canônico (H1 + faixa amarela + subtítulo opcional)
+# ---------------------------------------------------------------------------
+
+
+def canonical_header(title: str, yellow_subtitle: str | None = None) -> list[str]:
+    """Pilha canônica replicada da Aula 1: H1, faixa amarela e subtítulo opcional."""
+    parts: list[str] = []
+    parts.append(
+        text_box(
+            10,
+            H1_X,
+            H1_Y,
+            H1_W,
+            H1_H,
+            [
+                {
+                    "text": title,
+                    "sz": H1_SZ,
+                    "b": True,
+                    "color": NAVY,
+                    "font": "Arial Black",
+                }
+            ],
+            anchor="t",
+            align="l",
+        )
     )
+    parts.append(filled_rect(11, FAIXA_X, FAIXA_Y, FAIXA_W, FAIXA_H, YELLOW))
+    if yellow_subtitle:
+        parts.append(
+            text_box(
+                12,
+                SUB_X,
+                SUB_Y,
+                SUB_W,
+                SUB_H,
+                [
+                    {
+                        "text": yellow_subtitle,
+                        "sz": SUB_SZ,
+                        "b": True,
+                        "color": YELLOW,
+                        "font": "Arial",
+                    }
+                ],
+                anchor="t",
+                align="l",
+            )
+        )
+    return parts
 
 
 def footer_citation(sp_id: int, text: str) -> str:
@@ -346,11 +416,17 @@ def footer_citation(sp_id: int, text: str) -> str:
     )
 
 
+# ---------------------------------------------------------------------------
+# Salvamento de slides
+# ---------------------------------------------------------------------------
+
+
 def slide_xml(spt_inner: str) -> str:
     return XML_HEADER + BG_BLOCK + TREE_OPEN + spt_inner + TREE_CLOSE + XML_FOOTER
 
 
 def save_slide(n: int, body: str, *, image: int) -> None:
+    """`image=1` para capa/transição/fim; `image=2` para todos os demais."""
     (SLIDES / f"slide{n}.xml").write_text(slide_xml(body), encoding="utf-8")
     media = "image1.png" if image == 1 else "image2.png"
     rels = (
@@ -367,12 +443,23 @@ def save_slide(n: int, body: str, *, image: int) -> None:
     (RELS / f"slide{n}.xml.rels").write_text(rels, encoding="utf-8")
 
 
-def build_capa(n: int, aula_bloco: str, tema_top: str, tema_bot: str) -> None:
+# ---------------------------------------------------------------------------
+# Slides especiais — capa, transição, encerramento
+# ---------------------------------------------------------------------------
+
+
+def build_capa(
+    n: int,
+    aula_bloco: str,
+    tema: str,
+    subtitulo: str,
+) -> None:
+    """Capa do bloco — fundo image1.png. Geometria da Aula 1 slide 1."""
     parts: list[str] = []
     parts.append(
         text_box(
             10,
-            1097275,
+            HERO_X,
             914400,
             6790500,
             1828800,
@@ -385,7 +472,7 @@ def build_capa(n: int, aula_bloco: str, tema_top: str, tema_bot: str) -> None:
                     "font": "Arial Black",
                 }
             ],
-            anchor="ctr",
+            anchor="t",
             align="l",
         )
     )
@@ -396,17 +483,17 @@ def build_capa(n: int, aula_bloco: str, tema_top: str, tema_bot: str) -> None:
             1097280,
             2926080,
             5486400,
-            500000,
+            457200,
             [
                 {
                     "text": aula_bloco,
-                    "sz": 2400,
-                    "b": True,
+                    "sz": 2000,
+                    "b": False,
                     "color": YELLOW,
-                    "font": "Arial Black",
+                    "font": "Arial",
                 }
             ],
-            anchor="ctr",
+            anchor="t",
             align="l",
         )
     )
@@ -414,34 +501,13 @@ def build_capa(n: int, aula_bloco: str, tema_top: str, tema_bot: str) -> None:
         text_box(
             13,
             1097280,
-            3450000,
-            5486400,
-            900000,
-            [
-                {
-                    "text": tema_top,
-                    "sz": 2000,
-                    "b": True,
-                    "color": NAVY,
-                    "font": "Arial Black",
-                }
-            ],
-            anchor="t",
-            align="l",
-        )
-    )
-    parts.append(
-        text_box(
-            14,
-            1097280,
-            4000000,
+            3337560,
             5486400,
             500000,
             [
                 {
-                    "text": tema_bot,
+                    "text": tema,
                     "sz": 1400,
-                    "i": True,
                     "color": GREY,
                     "font": "Arial",
                 }
@@ -450,45 +516,46 @@ def build_capa(n: int, aula_bloco: str, tema_top: str, tema_bot: str) -> None:
             align="l",
         )
     )
-    save_slide(n, "".join(parts), image=2)
+    if subtitulo:
+        parts.append(
+            text_box(
+                14,
+                1097280,
+                3700000,
+                5486400,
+                400000,
+                [
+                    {
+                        "text": subtitulo,
+                        "sz": 1300,
+                        "i": True,
+                        "color": GREY,
+                        "font": "Arial",
+                    }
+                ],
+                anchor="t",
+                align="l",
+            )
+        )
+    save_slide(n, "".join(parts), image=1)
 
 
-def build_transicao(n: int, label: str, title: str, subtitle: str) -> None:
+def build_transicao(n: int, numero: str, titulo: str, subtitulo: str) -> None:
+    """Transição de tópico — fundo image1.png. Geometria da Aula 1 slide 6."""
     parts: list[str] = []
     parts.append(
         text_box(
             20,
-            1097280,
-            1300000,
-            5486400,
-            450000,
+            HERO_X,
+            900000,
+            1800000,
+            1100000,
             [
                 {
-                    "text": label,
-                    "sz": 2000,
+                    "text": numero,
+                    "sz": 9600,
                     "b": True,
                     "color": YELLOW,
-                    "font": "Arial Black",
-                }
-            ],
-            anchor="ctr",
-            align="l",
-        )
-    )
-    parts.append(filled_rect(21, 1097280, 1800000, 1828800, 54864, YELLOW))
-    parts.append(
-        text_box(
-            22,
-            1097280,
-            1950000,
-            6500000,
-            1300000,
-            [
-                {
-                    "text": title,
-                    "sz": 4000,
-                    "b": True,
-                    "color": NAVY,
                     "font": "Arial Black",
                 }
             ],
@@ -498,16 +565,36 @@ def build_transicao(n: int, label: str, title: str, subtitle: str) -> None:
     )
     parts.append(
         text_box(
+            21,
+            HERO_X,
+            2100000,
+            6500000,
+            1100000,
+            [
+                {
+                    "text": titulo,
+                    "sz": 3600,
+                    "b": True,
+                    "color": NAVY,
+                    "font": "Arial Black",
+                }
+            ],
+            anchor="t",
+            align="l",
+        )
+    )
+    parts.append(filled_rect(22, 1097280, 3250000, 1500000, 54864, YELLOW))
+    parts.append(
+        text_box(
             23,
             1097280,
-            3300000,
-            6000000,
+            3400000,
+            5486400,
             500000,
             [
                 {
-                    "text": subtitle,
-                    "sz": 1600,
-                    "i": True,
+                    "text": subtitulo,
+                    "sz": 1400,
                     "color": GREY,
                     "font": "Arial",
                 }
@@ -516,46 +603,50 @@ def build_transicao(n: int, label: str, title: str, subtitle: str) -> None:
             align="l",
         )
     )
-    save_slide(n, "".join(parts), image=2)
+    save_slide(n, "".join(parts), image=1)
 
 
-def build_encerramento(n: int) -> None:
+def build_encerramento_b1(
+    n: int,
+    bloco_n: int,
+    proximo_bloco_gancho: str,
+) -> None:
+    """Encerramento do Bloco 1 — fundo image1.png. Replica Aula 1 slide 49."""
     parts: list[str] = []
     parts.append(
         text_box(
             30,
-            1097280,
-            1500000,
+            END_X,
+            914400,
             5486400,
-            900000,
+            731400,
             [
                 {
-                    "text": "Obrigado!",
-                    "sz": 6000,
+                    "text": f"Fim do Bloco {bloco_n}",
+                    "sz": 3600,
                     "b": True,
                     "color": NAVY,
                     "font": "Arial Black",
                 }
             ],
-            anchor="ctr",
+            anchor="t",
             align="l",
         )
     )
-    parts.append(filled_rect(31, 1097280, 2700000, 1828800, 54864, YELLOW))
+    parts.append(filled_rect(31, END_X, 1691640, 1828800, 54900, YELLOW))
     parts.append(
         text_box(
             32,
-            1097280,
-            2800000,
+            END_X,
+            2391995,
             5486400,
-            600000,
+            457200,
             [
                 {
-                    "text": "Perguntas?",
-                    "sz": 3200,
-                    "b": True,
+                    "text": "Intervalo de 15 minutos",
+                    "sz": 2000,
                     "color": YELLOW,
-                    "font": "Arial Black",
+                    "font": "Arial",
                 }
             ],
             anchor="t",
@@ -565,15 +656,439 @@ def build_encerramento(n: int) -> None:
     parts.append(
         text_box(
             33,
-            1097280,
-            3500000,
+            END_X - 5,
+            2849200,
             5486400,
+            360000,
+            [
+                {
+                    "text": f"No Bloco 2: {proximo_bloco_gancho}",
+                    "sz": 1300,
+                    "color": GREY,
+                    "font": "Arial",
+                }
+            ],
+            anchor="t",
+            align="l",
+        )
+    )
+    save_slide(n, "".join(parts), image=1)
+
+
+# ---------------------------------------------------------------------------
+# Slides estruturais — Agenda, Objetivos, Conexão, Síntese, Ponte, Referências
+# ---------------------------------------------------------------------------
+
+
+def build_agenda(n: int, items: list[str]) -> None:
+    """Agenda do Bloco — grade 2×4 (até 8 itens). Replica Aula 1 B1 slide 3."""
+    parts = canonical_header("Agenda do Bloco", "O que vamos percorrer nas próximas 1h50min")
+
+    # grade 2×4: 4 linhas, 2 colunas
+    y_positions = [1700000, 2300000, 2900000, 3500000]
+    el_x_left = 781363
+    el_x_right = 4204761
+    title_x_left = 1301363
+    title_x_right = 4724761
+
+    base_id = 50
+    for i, item in enumerate(items[:8]):
+        col = i % 2  # 0 = esquerda, 1 = direita
+        row = i // 2
+        if row >= len(y_positions):
+            break
+        y = y_positions[row]
+        el_x = el_x_left if col == 0 else el_x_right
+        t_x = title_x_left if col == 0 else title_x_right
+
+        parts.append(
+            ellipse(
+                base_id + i * 2,
+                el_x,
+                y,
+                420000,
+                420000,
+                NAVY,
+                text=str(i + 1),
+                text_color=YELLOW,
+                text_size=1600,
+                text_bold=True,
+            )
+        )
+        parts.append(
+            text_box(
+                base_id + i * 2 + 1,
+                t_x,
+                y + 60000,
+                2400000,
+                399900,
+                [
+                    {
+                        "text": item,
+                        "sz": 1200,
+                        "color": NAVY,
+                        "font": "Arial",
+                    }
+                ],
+                anchor="ctr",
+                align="l",
+            )
+        )
+
+    save_slide(n, "".join(parts), image=2)
+
+
+def build_objetivos(n: int, items: list[tuple[str, str]]) -> None:
+    """Objetivos de aprendizagem — círculo amarelo + verbo + descrição.
+
+    `items` é uma lista de pares (verbo, descrição). Replica Aula 1 B1 slide 4.
+    """
+    parts = canonical_header(
+        "Objetivos de Aprendizagem",
+        "Ao final deste bloco, você será capaz de",
+    )
+
+    y_positions = [1750000, 2270000, 2790000, 3310000, 3830000]
+    base_id = 50
+
+    for i, (verbo, descricao) in enumerate(items[:5]):
+        y = y_positions[i]
+        # Círculo amarelo pequeno
+        parts.append(
+            ellipse(
+                base_id + i * 3,
+                790000,
+                y + 30000,
+                160000,
+                160000,
+                YELLOW,
+                text="",
+            )
+        )
+        # Verbo
+        parts.append(
+            text_box(
+                base_id + i * 3 + 1,
+                1060000,
+                y,
+                1800000,
+                300000,
+                [
+                    {
+                        "text": verbo,
+                        "sz": 1500,
+                        "b": True,
+                        "color": NAVY,
+                        "font": "Arial Black",
+                    }
+                ],
+                anchor="t",
+                align="l",
+            )
+        )
+        # Descrição
+        parts.append(
+            text_box(
+                base_id + i * 3 + 2,
+                2900000,
+                y,
+                3500000,
+                500100,
+                [
+                    {
+                        "text": descricao,
+                        "sz": 1250,
+                        "color": TEXT,
+                        "font": "Arial",
+                    }
+                ],
+                anchor="t",
+                align="l",
+            )
+        )
+
+    save_slide(n, "".join(parts), image=2)
+
+
+def build_conexao_voltando(
+    n: int,
+    titulo: str,
+    subtitulo_amarelo: str,
+    intro: str,
+    paragrafos: list[str],
+    *,
+    citation: str | None = None,
+) -> None:
+    """Conexão / 'Voltando do intervalo' — variante texto corrido.
+
+    Replica padrão de Aula 1 B2 slide 4 (texto corrido sob o cabeçalho).
+    """
+    parts = canonical_header(titulo, subtitulo_amarelo)
+
+    parts.append(
+        text_box(
+            50,
+            CONTENT_X_MIN,
+            1730000,
+            CONTENT_W,
+            340000,
+            [
+                {
+                    "text": intro,
+                    "sz": 1400,
+                    "color": TEXT,
+                    "font": "Arial",
+                }
+            ],
+            anchor="t",
+            align="l",
+        )
+    )
+
+    paragraphs = [
+        [{"text": p, "sz": 1500, "color": TEXT, "font": "Arial"}] for p in paragrafos
+    ]
+    parts.append(
+        multi_para_box(
+            51,
+            CONTENT_X_MIN,
+            2200000,
+            CONTENT_W,
+            2050000,
+            paragraphs,
+            line_spc=130000,
+            para_spc_before=600,
+        )
+    )
+    if citation:
+        parts.append(footer_citation(52, citation))
+    save_slide(n, "".join(parts), image=2)
+
+
+def build_sintese(n: int, items: list[str]) -> None:
+    """Síntese do Bloco — 5 itens com selo amarelo numerado. Replica Aula 1 B1 slide 46."""
+    parts = canonical_header(
+        "Síntese do Bloco",
+        f"{['Um', 'Dois', 'Três', 'Quatro', 'Cinco'][min(len(items), 5) - 1]} pontos para levar para casa",
+    )
+
+    y_positions = [1750000, 2320000, 2890000, 3460000, 4030000]
+    base_id = 50
+
+    for i, txt in enumerate(items[:5]):
+        y = y_positions[i]
+        # Selo amarelo com número branco
+        parts.append(
+            filled_rect(
+                base_id + i * 2,
+                750000,
+                y,
+                500000,
+                500000,
+                YELLOW,
+                text_runs=[
+                    {
+                        "text": str(i + 1),
+                        "sz": 2000,
+                        "b": True,
+                        "color": WHITE,
+                        "font": "Arial Black",
+                    }
+                ],
+                text_align="ctr",
+                text_anchor="ctr",
+            )
+        )
+        # Texto descritivo
+        parts.append(
+            text_box(
+                base_id + i * 2 + 1,
+                1350000,
+                y + 60000,
+                5300000,
+                450000,
+                [
+                    {
+                        "text": txt,
+                        "sz": 1250,
+                        "color": TEXT,
+                        "font": "Arial",
+                    }
+                ],
+                anchor="t",
+                align="l",
+            )
+        )
+
+    save_slide(n, "".join(parts), image=2)
+
+
+def build_ponte(
+    n: int,
+    titulo_destaque: str,
+    descricao_destaque: str,
+    items: list[tuple[str, str]],
+) -> None:
+    """Ponte para o Bloco 2 — hero seta + lista de até 4 itens.
+
+    Replica Aula 1 B1 slide 47. `items` = lista de (título, descrição).
+    """
+    parts = canonical_header("Ponte para o Bloco 2", "O que vem a seguir, depois do intervalo")
+
+    # Hero seta amarela
+    parts.append(
+        text_box(
+            50,
+            750000,
+            1585100,
+            1500000,
+            594900,
+            [
+                {
+                    "text": "➜",
+                    "sz": 6000,
+                    "b": True,
+                    "color": YELLOW,
+                    "font": "Arial Black",
+                }
+            ],
+            anchor="ctr",
+            align="l",
+        )
+    )
+    # Título de destaque
+    parts.append(
+        text_box(
+            51,
+            2200000,
+            1780000,
+            4500000,
             400000,
             [
                 {
-                    "text": "Aula 2 · Bloco 1 · IBMEC",
-                    "sz": 1400,
-                    "i": True,
+                    "text": titulo_destaque,
+                    "sz": 2000,
+                    "b": True,
+                    "color": NAVY,
+                    "font": "Arial Black",
+                }
+            ],
+            anchor="t",
+            align="l",
+        )
+    )
+    # Descrição cinza do hero
+    parts.append(
+        text_box(
+            52,
+            2200000,
+            2100000,
+            4500000,
+            399900,
+            [
+                {
+                    "text": descricao_destaque,
+                    "sz": 1250,
+                    "color": GREY,
+                    "font": "Arial",
+                }
+            ],
+            anchor="t",
+            align="l",
+        )
+    )
+
+    # Itens (até 4)
+    y_positions = [2600000, 3030000, 3460000, 3890000]
+    base_id = 53
+    for i, (titulo_item, descricao_item) in enumerate(items[:4]):
+        y = y_positions[i]
+        # Bullet amarelo
+        parts.append(
+            ellipse(
+                base_id + i * 3,
+                790000,
+                y + 50000,
+                197700,
+                180000,
+                YELLOW,
+                text="",
+            )
+        )
+        # Título do item
+        parts.append(
+            text_box(
+                base_id + i * 3 + 1,
+                1075695,
+                y,
+                2637300,
+                300000,
+                [
+                    {
+                        "text": titulo_item,
+                        "sz": 1250,
+                        "color": NAVY,
+                        "font": "Arial",
+                    }
+                ],
+                anchor="t",
+                align="l",
+            )
+        )
+        # Descrição do item
+        parts.append(
+            text_box(
+                base_id + i * 3 + 2,
+                3822762,
+                y,
+                3406500,
+                300000,
+                [
+                    {
+                        "text": descricao_item,
+                        "sz": 1150,
+                        "color": TEXT,
+                        "font": "Arial",
+                    }
+                ],
+                anchor="t",
+                align="l",
+            )
+        )
+
+    save_slide(n, "".join(parts), image=2)
+
+
+def build_referencias(n: int, items: list[str]) -> None:
+    """Referências do bloco — caixa única com texto ABNT. Replica Aula 1 B1 slide 48."""
+    parts = canonical_header("Referências do Bloco", "Fontes citadas ao longo do conteúdo")
+
+    paragraphs = [
+        [{"text": item, "sz": 1000, "color": TEXT, "font": "Arial"}] for item in items
+    ]
+    parts.append(
+        multi_para_box(
+            50,
+            CONTENT_X_MIN,
+            1780000,
+            7025100,
+            2350000,
+            paragraphs,
+            line_spc=115000,
+            para_spc_before=250,
+        )
+    )
+    parts.append(
+        text_box(
+            51,
+            CONTENT_X_MIN,
+            4250000,
+            CONTENT_W,
+            300000,
+            [
+                {
+                    "text": "Leituras complementares estarão indicadas ao longo dos próximos blocos.",
+                    "sz": 1000,
                     "color": GREY,
                     "font": "Arial",
                 }
@@ -585,115 +1100,29 @@ def build_encerramento(n: int) -> None:
     save_slide(n, "".join(parts), image=2)
 
 
-def build_lista_numerada(
-    n: int,
-    title: str,
-    items: list[str],
-    *,
-    citation: str | None = None,
-    item_size: int = 1500,
-) -> None:
-    parts: list[str] = [title_box(40, title)]
-    paragraphs = []
-    for i, txt in enumerate(items, start=1):
-        paragraphs.append(
-            [
-                {
-                    "text": f"{i:>2}.  ",
-                    "sz": item_size,
-                    "b": True,
-                    "color": YELLOW,
-                    "font": "Arial Black",
-                },
-                {"text": txt, "sz": item_size, "color": TEXT, "font": "Arial"},
-            ]
-        )
-    parts.append(
-        multi_para_box(
-            41,
-            CONTENT_X_MIN,
-            1650000,
-            CONTENT_W,
-            2700000,
-            paragraphs,
-            line_spc=115000,
-            para_spc_before=600,
-        )
-    )
-    if citation:
-        parts.append(footer_citation(42, citation))
-    save_slide(n, "".join(parts), image=1)
-
-
-def build_objetivos(n: int, title: str, items: list[str]) -> None:
-    parts: list[str] = [title_box(40, title)]
-    paragraphs = [
-        [
-            {
-                "text": "✓  ",
-                "sz": 1800,
-                "b": True,
-                "color": YELLOW,
-                "font": "Arial Black",
-            },
-            {"text": txt, "sz": 1800, "color": TEXT, "font": "Arial"},
-        ]
-        for txt in items
-    ]
-    parts.append(
-        multi_para_box(
-            41,
-            CONTENT_X_MIN,
-            1700000,
-            CONTENT_W,
-            2500000,
-            paragraphs,
-            line_spc=130000,
-            para_spc_before=800,
-        )
-    )
-    save_slide(n, "".join(parts), image=1)
+# ---------------------------------------------------------------------------
+# Slides de conteúdo (cabeçalho padrão + corpo)
+# ---------------------------------------------------------------------------
 
 
 def build_conceito(
     n: int,
     title: str,
-    paragraphs_text: list[str],
+    paragrafos: list[str],
     *,
     citation: str | None = None,
     accent: str | None = None,
 ) -> None:
-    parts: list[str] = [title_box(40, title)]
-    if accent:
-        parts.append(
-            text_box(
-                41,
-                CONTENT_X_MIN,
-                1620000,
-                CONTENT_W,
-                400000,
-                [
-                    {
-                        "text": accent,
-                        "sz": 1600,
-                        "b": True,
-                        "color": YELLOW,
-                        "font": "Arial Black",
-                    }
-                ],
-                align="l",
-            )
-        )
-        body_y = 2050000
-    else:
-        body_y = 1700000
+    """Conceito + parágrafos sob cabeçalho padrão."""
+    parts = canonical_header(title, accent)
+    body_y = 1730000 if accent else 1700000
 
     paragraphs = [
-        [{"text": p, "sz": 1600, "color": TEXT, "font": "Arial"}] for p in paragraphs_text
+        [{"text": p, "sz": 1500, "color": TEXT, "font": "Arial"}] for p in paragrafos
     ]
     parts.append(
         multi_para_box(
-            42,
+            50,
             CONTENT_X_MIN,
             body_y,
             CONTENT_W,
@@ -704,8 +1133,8 @@ def build_conceito(
         )
     )
     if citation:
-        parts.append(footer_citation(43, citation))
-    save_slide(n, "".join(parts), image=1)
+        parts.append(footer_citation(51, citation))
+    save_slide(n, "".join(parts), image=2)
 
 
 def build_card(
@@ -715,31 +1144,22 @@ def build_card(
     card_paragraphs: list[str],
     *,
     citation: str | None = None,
-    card_h: int = 2550000,
-    card_title_size: int = 1800,
-    card_text_size: int = 1500,
+    card_h: int = 2400000,
+    card_title_size: int = 1700,
+    card_text_size: int = 1400,
 ) -> None:
-    parts: list[str] = [title_box(40, title)]
-    card_paras = [
-        [
-            {
-                "text": card_title,
-                "sz": card_title_size,
-                "b": True,
-                "color": NAVY,
-                "font": "Arial Black",
-            }
-        ]
-    ]
+    """Card cinza claro com borda navy, sob cabeçalho padrão."""
+    parts = canonical_header(title, card_title)
+    card_paras = []
     for p in card_paragraphs:
         card_paras.append(
             [{"text": p, "sz": card_text_size, "color": TEXT, "font": "Arial"}]
         )
     parts.append(
         filled_rect(
-            41,
+            50,
             CONTENT_X_MIN + 50000,
-            1650000,
+            1800000,
             CONTENT_W - 100000,
             card_h,
             LIGHT,
@@ -751,8 +1171,8 @@ def build_card(
         )
     )
     if citation:
-        parts.append(footer_citation(42, citation))
-    save_slide(n, "".join(parts), image=1)
+        parts.append(footer_citation(51, citation))
+    save_slide(n, "".join(parts), image=2)
 
 
 def build_stat(
@@ -763,12 +1183,13 @@ def build_stat(
     *,
     citation: str | None = None,
 ) -> None:
-    parts: list[str] = [title_box(40, title)]
+    """Stat callout: número grande + label."""
+    parts = canonical_header(title)
     parts.append(
         text_box(
-            41,
+            50,
             CONTENT_X_MIN,
-            1750000,
+            1800000,
             5800000,
             1400000,
             [
@@ -786,7 +1207,7 @@ def build_stat(
     )
     parts.append(
         text_box(
-            42,
+            51,
             CONTENT_X_MIN,
             3300000,
             CONTENT_W,
@@ -804,8 +1225,8 @@ def build_stat(
         )
     )
     if citation:
-        parts.append(footer_citation(43, citation))
-    save_slide(n, "".join(parts), image=1)
+        parts.append(footer_citation(52, citation))
+    save_slide(n, "".join(parts), image=2)
 
 
 def build_comparacao(
@@ -818,27 +1239,29 @@ def build_comparacao(
     *,
     citation: str | None = None,
 ) -> None:
-    parts: list[str] = [title_box(40, title)]
+    """Comparação em 2 colunas (header navy + amarelo, body com bullets)."""
+    parts = canonical_header(title)
+
     col_w = 2870000
     gap = 210000
     left_x = CONTENT_X_MIN
     right_x = CONTENT_X_MIN + col_w + gap
-    header_y = 1650000
+    header_y = 1780000
     header_h = 480000
     body_y = header_y + header_h
-    body_h = 2300000
+    body_h = 1850000
 
     max_len = max((len(s) for s in left_items + right_items), default=0)
     if max_len > 80:
-        item_size = 1200
+        item_size = 1100
     elif max_len > 50:
-        item_size = 1300
+        item_size = 1250
     else:
-        item_size = 1500
+        item_size = 1400
 
     parts.append(
         filled_rect(
-            41,
+            50,
             left_x,
             header_y,
             col_w,
@@ -859,7 +1282,7 @@ def build_comparacao(
     )
     parts.append(
         filled_rect(
-            42,
+            51,
             right_x,
             header_y,
             col_w,
@@ -887,7 +1310,7 @@ def build_comparacao(
     ]
     parts.append(
         multi_para_box(
-            43,
+            52,
             left_x,
             body_y,
             col_w,
@@ -901,7 +1324,7 @@ def build_comparacao(
     )
     parts.append(
         multi_para_box(
-            44,
+            53,
             right_x,
             body_y,
             col_w,
@@ -913,10 +1336,9 @@ def build_comparacao(
             para_spc_before=400,
         )
     )
-
     if citation:
-        parts.append(footer_citation(45, citation))
-    save_slide(n, "".join(parts), image=1)
+        parts.append(footer_citation(54, citation))
+    save_slide(n, "".join(parts), image=2)
 
 
 def build_diagrama_6_etapas(
@@ -927,11 +1349,12 @@ def build_diagrama_6_etapas(
     destaque: int | None = None,
     citation: str | None = None,
 ) -> None:
-    parts: list[str] = [title_box(40, title)]
+    """Diagrama horizontal de 6 etapas em círculos navy/amarelos."""
+    parts = canonical_header(title)
     nodes = 6
     diam = 700000
     spacing = (CONTENT_W - diam) / (nodes - 1)
-    y_circ = 1900000
+    y_circ = 2000000
     label_y = y_circ + diam + 80000
 
     base_id = 50
@@ -982,10 +1405,9 @@ def build_diagrama_6_etapas(
                 align="ctr",
             )
         )
-
     if citation:
         parts.append(footer_citation(60, citation))
-    save_slide(n, "".join(parts), image=1)
+    save_slide(n, "".join(parts), image=2)
 
 
 def build_tabela(
@@ -997,16 +1419,17 @@ def build_tabela(
     citation: str | None = None,
     col_widths: list[int] | None = None,
 ) -> None:
-    parts: list[str] = [title_box(40, title)]
+    """Tabela zebrada com header navy."""
+    parts = canonical_header(title)
 
     n_cols = len(header)
     if col_widths is None:
         col_widths = [CONTENT_W // n_cols] * n_cols
     assert len(col_widths) == n_cols
 
-    row_h = 330000
+    row_h = 320000
     header_h = 380000
-    base_y = 1650000
+    base_y = 1780000
 
     base_id = 50
     sp_id = base_id
@@ -1067,7 +1490,7 @@ def build_tabela(
 
     if citation:
         parts.append(footer_citation(sp_id, citation))
-    save_slide(n, "".join(parts), image=1)
+    save_slide(n, "".join(parts), image=2)
 
 
 def build_armadilhas(
@@ -1077,10 +1500,11 @@ def build_armadilhas(
     *,
     citation: str | None = None,
 ) -> None:
-    parts: list[str] = [title_box(40, title)]
-    card_h = 830000
+    """Armadilhas em 3 cards verticais com borda amarela."""
+    parts = canonical_header(title)
+    card_h = 700000
     gap = 50000
-    base_y = 1650000
+    base_y = 1800000
 
     for i, (label, body) in enumerate(items):
         y = base_y + i * (card_h + gap)
@@ -1099,13 +1523,13 @@ def build_armadilhas(
                     [
                         {
                             "text": f"⚠  {label}",
-                            "sz": 1500,
+                            "sz": 1400,
                             "b": True,
                             "color": NAVY,
                             "font": "Arial Black",
                         }
                     ],
-                    [{"text": body, "sz": 1250, "color": TEXT, "font": "Arial"}],
+                    [{"text": body, "sz": 1150, "color": TEXT, "font": "Arial"}],
                 ],
                 text_align="l",
                 text_anchor="t",
@@ -1114,30 +1538,119 @@ def build_armadilhas(
 
     if citation:
         parts.append(footer_citation(80, citation))
-    save_slide(n, "".join(parts), image=1)
+    save_slide(n, "".join(parts), image=2)
+
+
+def build_lista_numerada(
+    n: int,
+    title: str,
+    items: list[str],
+    *,
+    citation: str | None = None,
+    item_size: int = 1300,
+    accent: str | None = None,
+) -> None:
+    """Lista numerada simples (cabeçalho padrão + parágrafos numerados em amarelo)."""
+    parts = canonical_header(title, accent)
+    paragraphs = []
+    for i, txt in enumerate(items, start=1):
+        paragraphs.append(
+            [
+                {
+                    "text": f"{i:>2}.  ",
+                    "sz": item_size,
+                    "b": True,
+                    "color": YELLOW,
+                    "font": "Arial Black",
+                },
+                {"text": txt, "sz": item_size, "color": TEXT, "font": "Arial"},
+            ]
+        )
+    parts.append(
+        multi_para_box(
+            50,
+            CONTENT_X_MIN,
+            1780000,
+            CONTENT_W,
+            2700000,
+            paragraphs,
+            line_spc=120000,
+            para_spc_before=600,
+        )
+    )
+    if citation:
+        parts.append(footer_citation(51, citation))
+    save_slide(n, "".join(parts), image=2)
+
+
+def build_recap_atividade(
+    n: int,
+    aula_n: int,
+    intro: str,
+    questoes: list[str],
+    *,
+    citation: str | None = None,
+) -> None:
+    """Recap da Atividade N (slide 2 do bloco de correção)."""
+    parts = canonical_header(
+        f"O que foi pedido na Atividade {aula_n - 1}",
+        f"Atividade Prática {aula_n - 1} (Bloco 2 da Aula {aula_n - 1}) · 3 questões",
+    )
+
+    paragraphs = [[{"text": intro, "sz": 1400, "color": TEXT, "font": "Arial"}]]
+    for i, q in enumerate(questoes[:3], start=1):
+        paragraphs.append(
+            [
+                {
+                    "text": f"Q{i}. ",
+                    "sz": 1400,
+                    "b": True,
+                    "color": YELLOW,
+                    "font": "Arial Black",
+                },
+                {"text": q, "sz": 1400, "color": TEXT, "font": "Arial"},
+            ]
+        )
+
+    parts.append(
+        multi_para_box(
+            50,
+            CONTENT_X_MIN,
+            1780000,
+            CONTENT_W,
+            2520000,
+            paragraphs,
+            line_spc=125000,
+            para_spc_before=600,
+        )
+    )
+    if citation:
+        parts.append(footer_citation(51, citation))
+    save_slide(n, "".join(parts), image=2)
 
 
 def build_correcao_questao(
     n: int,
+    aula_n: int,
     questao_num: int,
     enunciado: str,
     pontos: list[str],
     *,
     citation: str | None = None,
 ) -> None:
-    """Slide de correção de uma questão da atividade anterior.
+    """Slide de correção (1 por questão). Cabeçalho padrão + enunciado + bullets."""
+    parts = canonical_header(
+        f"Atividade {aula_n - 1} · Questão {questao_num}",
+        "Caminho de resposta esperado e armadilhas observadas",
+    )
 
-    Layout: título, caixa amarela com o enunciado da questão e bullets
-    com o caminho de resposta esperado, exemplo XY&A e armadilhas.
-    Usado no Bloco 1 das Aulas 2 a 5 (1 slide por questão, sempre 3 questões).
-    """
-    parts: list[str] = [title_box(40, f"Atividade 1 · Questão {questao_num}")]
+    # Card amarelo com enunciado
     parts.append(
         filled_rect(
-            41,
-            CONTENT_X_MIN + 50000,
-            1620000,
-            CONTENT_W - 100000,
+            50,
+            CONTENT_X_MIN,
+            1780000,
+            CONTENT_W,
             720000,
             YELLOW,
             multi_paragraphs=[
@@ -1155,138 +1668,40 @@ def build_correcao_questao(
             text_anchor="ctr",
         )
     )
+
     paragraphs = [
         [
             {
                 "text": "▶  ",
-                "sz": 1300,
+                "sz": 1200,
                 "b": True,
                 "color": YELLOW,
                 "font": "Arial Black",
             },
-            {"text": p, "sz": 1300, "color": TEXT, "font": "Arial"},
+            {"text": p, "sz": 1200, "color": TEXT, "font": "Arial"},
         ]
         for p in pontos
     ]
     parts.append(
         multi_para_box(
-            42,
+            51,
             CONTENT_X_MIN,
-            2380000,
+            2560000,
             CONTENT_W,
-            1900000,
+            1700000,
             paragraphs,
-            line_spc=118000,
-            para_spc_before=350,
+            line_spc=115000,
+            para_spc_before=300,
         )
     )
     if citation:
-        parts.append(
-            text_box(
-                43,
-                CONTENT_X_MIN,
-                4400000,
-                CONTENT_W,
-                170000,
-                [{"text": citation, "sz": 1000, "i": True, "color": GREY, "font": "Arial"}],
-                align="l",
-                anchor="b",
-            )
-        )
-    save_slide(n, "".join(parts), image=1)
+        parts.append(footer_citation(52, citation))
+    save_slide(n, "".join(parts), image=2)
 
 
-def build_atividade(
-    n: int,
-    titulo_curto: str,
-    enunciado: list[str],
-    lembrete: str,
-) -> None:
-    parts: list[str] = [title_box(40, titulo_curto)]
-    parts.append(
-        text_box(
-            41,
-            CONTENT_X_MIN,
-            1620000,
-            CONTENT_W,
-            400000,
-            [
-                {
-                    "text": "Entrega até a Aula 3",
-                    "sz": 1500,
-                    "b": True,
-                    "color": YELLOW,
-                    "font": "Arial Black",
-                }
-            ],
-            align="l",
-        )
-    )
-    paragraphs = [
-        [
-            {
-                "text": "▶  ",
-                "sz": 1400,
-                "b": True,
-                "color": YELLOW,
-                "font": "Arial Black",
-            },
-            {"text": item, "sz": 1400, "color": TEXT, "font": "Arial"},
-        ]
-        for item in enunciado
-    ]
-    parts.append(
-        multi_para_box(
-            42,
-            CONTENT_X_MIN,
-            2050000,
-            CONTENT_W,
-            1900000,
-            paragraphs,
-            line_spc=125000,
-            para_spc_before=500,
-        )
-    )
-    parts.append(
-        text_box(
-            43,
-            CONTENT_X_MIN,
-            4100000,
-            CONTENT_W,
-            350000,
-            [
-                {
-                    "text": lembrete,
-                    "sz": 1100,
-                    "i": True,
-                    "color": GREY,
-                    "font": "Arial",
-                }
-            ],
-            align="l",
-        )
-    )
-    save_slide(n, "".join(parts), image=1)
-
-
-def build_referencias(n: int, title: str, items: list[str]) -> None:
-    parts: list[str] = [title_box(40, title)]
-    paragraphs = [[{"text": item, "sz": 1100, "color": TEXT, "font": "Arial"}] for item in items]
-    parts.append(
-        multi_para_box(
-            41,
-            CONTENT_X_MIN,
-            1650000,
-            CONTENT_W,
-            2700000,
-            paragraphs,
-            line_spc=120000,
-            para_spc_before=400,
-            bullet="•",
-            bullet_color=NAVY,
-        )
-    )
-    save_slide(n, "".join(parts), image=1)
+# ---------------------------------------------------------------------------
+# Atualizações em [Content_Types].xml e presentation.xml
+# ---------------------------------------------------------------------------
 
 
 def update_content_types(slide_count: int) -> None:
@@ -1338,10 +1753,16 @@ def update_presentation(slide_count: int) -> None:
     PRES.write_text(pres, encoding="utf-8")
 
 
+# ---------------------------------------------------------------------------
+# Construção do bloco
+# ---------------------------------------------------------------------------
+
+
 def main() -> None:
     SLIDES.mkdir(parents=True, exist_ok=True)
     RELS.mkdir(parents=True, exist_ok=True)
 
+    # 1. Capa
     build_capa(
         1,
         "Aula 2 · Bloco 1",
@@ -1349,69 +1770,71 @@ def main() -> None:
         "Do problema à coleta: perguntar e mapear no modo raiz",
     )
 
-    build_lista_numerada(
+    # 2. Agenda
+    build_agenda(
         2,
-        "Agenda do Bloco",
         [
             "Correção das 3 questões da Atividade 1",
             "Visão geral das 6 etapas do ciclo",
             "Por que pensar em ciclo importa",
-            "Etapa 1: transformar pergunta jurídica em investigável",
-            "Critérios de boa pergunta e exemplos práticos",
-            "Etapa 2: mapear as informações necessárias",
-            "Demonstração: variáveis na base de locação do TJSP",
-            "Exercício dirigido e fechamento da Etapa 2",
+            "Etapa 1: pergunta jurídica em investigável",
+            "Critérios de boa pergunta e exemplos",
+            "Etapa 2: mapear as informações",
+            "Variáveis na base de locação do TJSP",
+            "Exercício dirigido e fechamento",
         ],
-        item_size=1500,
     )
 
+    # 3. Objetivos
     build_objetivos(
         3,
-        "Objetivos de aprendizagem",
         [
-            "Compreender o ciclo da ciência de dados aplicado ao Direito em suas 6 etapas",
-            "Reconhecer os critérios de uma pergunta jurimétrica investigável",
-            "Reescrever uma pergunta jurídica vaga em pergunta de dados",
-            "Mapear, a partir de uma pergunta, as variáveis e fontes necessárias",
+            ("Compreender", "o ciclo da ciência de dados aplicado ao Direito em suas 6 etapas"),
+            ("Reconhecer", "os critérios de uma pergunta jurimétrica investigável"),
+            ("Reescrever", "uma pergunta jurídica vaga em pergunta de dados"),
+            ("Mapear", "as variáveis e fontes necessárias a partir de uma pergunta"),
+            ("Construir", "uma tabela analítica mínima como ponto de partida da análise"),
         ],
     )
 
-    build_card(
+    # 4. Conexão / Voltando do intervalo
+    build_conexao_voltando(
         4,
         "Onde estamos no curso",
         "Da fundamentação ao método",
+        "Na Aula 1, vimos por que dados importam para o operador do Direito e o que é Jurimetria.",
         [
-            "Na Aula 1, vimos por que dados importam para o operador do Direito e o que é Jurimetria.",
-            "Agora começa o método: o ciclo da ciência de dados em modo raiz, que será percorrido nas Aulas 2 e 3.",
+            "Agora começa o método: o ciclo da ciência de dados em modo raiz, percorrido nas Aulas 2 e 3.",
             "Toda a aula opera sobre a base do trabalho final (16.110 julgados de locação do TJSP) e sobre o caso XY&A.",
+            "Depois, na Aula 5, o mesmo ciclo será revisitado com IA generativa em cada etapa.",
         ],
         citation="Nunes (2019); CNJ (2024)",
     )
 
+    # 5. Transição 01 — Correção da atividade
     build_transicao(
         5,
-        "Tópico 1",
+        "01",
         "Atividade 1: o que aprendemos",
         "Correção comentada das 3 questões e ponte para o método desta aula",
     )
 
-    build_card(
+    # 6. Recap da Atividade 1
+    build_recap_atividade(
         6,
-        "O que foi pedido na Atividade 1",
-        "Atividade Prática 1 (Bloco 2 da Aula 1) · 3 questões",
+        2,  # aula_n=2 → corrige Atividade 1
+        "Pano de fundo: caso XY&A e a base de 16.110 julgados de locação do TJSP, sobre os fundamentos da Aula 1.",
         [
-            "Pano de fundo: caso XY&A e a base de 16.110 julgados de locação do TJSP, sobre os fundamentos de dados da Aula 1.",
-            "Q1. Listar 3 perguntas jurimétricas do XY&A em ao menos 2 áreas (contencioso, gestão, provisionamento).",
-            "Q2. Reescrever uma das 3 perguntas em formato investigável (tema, recorte, variável central, comparação).",
-            "Q3. Apontar que decisão concreta do escritório a resposta apoiaria, e por quê.",
+            "Listar 3 perguntas jurimétricas do XY&A em ao menos 2 áreas (contencioso, gestão, provisionamento).",
+            "Reescrever uma das 3 perguntas em formato investigável: tema, recorte, variável central e comparação.",
+            "Apontar que decisão concreta do escritório a resposta apoiaria, e por quê.",
         ],
-        card_h=2650000,
-        card_title_size=1700,
-        card_text_size=1400,
     )
 
+    # 7. Correção Q1
     build_correcao_questao(
         7,
+        2,
         1,
         "Q1. Listar 3 perguntas jurimétricas do XY&A em ao menos 2 áreas (contencioso, gestão, provisionamento).",
         [
@@ -1422,30 +1845,35 @@ def main() -> None:
         citation="Nunes (2019); ABJ (relatórios)",
     )
 
+    # 8. Correção Q2
     build_correcao_questao(
         8,
         2,
+        2,
         "Q2. Reescrever uma das 3 perguntas em formato investigável: tema, recorte, variável central e comparação.",
         [
-            "Caminho de resposta: tema = matéria e tipo de ação; recorte = jurisdição e período; variável central = o que será medido (taxa, mediana, valor); comparação = média ou outro grupo.",
-            "Exemplo XY&A: 'Em renovatórias do TJSP, parte PJ, 2018 a 2024, qual a taxa de procedência em favor do locador?'.",
-            "Armadilhas frequentes: pergunta 'investigável' que ainda mistura opinião e métrica, ausência de ponto de comparação ou recorte vago.",
+            "Caminho de resposta: tema (matéria e tipo de ação), recorte (jurisdição e período), variável central (taxa, mediana, valor) e ponto de comparação (média ou outro grupo).",
+            "Exemplo XY&A: 'Em renovatórias do TJSP, parte PJ, 2018 a 2024, qual a taxa de procedência em favor do locador comparada à média do tribunal?'.",
+            "Armadilhas frequentes: pergunta investigável que ainda mistura opinião e métrica, ausência de ponto de comparação ou recorte vago.",
         ],
         citation="Nunes (2019); Katz e Bommarito (2013)",
     )
 
+    # 9. Correção Q3
     build_correcao_questao(
         9,
+        2,
         3,
-        "Q3. Que decisão concreta do escritório (litígio, negociação, provisionamento, gestão) a resposta apoiaria, e por quê.",
+        "Q3. Que decisão concreta do escritório a resposta apoiaria, e por quê.",
         [
             "Caminho de resposta: nomear uma decisão específica que mudaria com a resposta. Exemplos: política de acordo, recalibrar provisão, redistribuir equipe, mudar tese.",
-            "Exemplo XY&A: se a taxa de procedência em renovatórias caiu, a decisão pode ser revisar a estratégia de litígio e priorizar acordos.",
-            "Armadilhas frequentes: respostas vagas como 'a empresa fica mais informada', sem nomear a decisão concreta que muda.",
+            "Exemplo XY&A: se a taxa de procedência em renovatórias caiu, a decisão pode ser revisar a estratégia de litígio e priorizar acordos por faixa de valor.",
+            "Armadilhas frequentes: respostas vagas como 'a empresa fica mais informada', sem nomear a decisão concreta que muda com o número.",
         ],
         citation="Susskind (2023); Nunes (2019)",
     )
 
+    # 10. Insight / ponte para o conteúdo novo
     build_conceito(
         10,
         "Da pergunta solta à pergunta de dados",
@@ -1455,16 +1883,18 @@ def main() -> None:
             "Quando a pergunta é ruim, qualquer dado parece interessante. É aí que estatística vira marketing.",
         ],
         citation="Huff (2016); Silver (2013)",
-        accent="Insight do Bloco e ponte para o ciclo",
+        accent="Insight da correção e ponte para o ciclo",
     )
 
+    # 11. Transição 02 — O ciclo da ciência de dados
     build_transicao(
         11,
-        "Tópico 2",
+        "02",
         "O ciclo da ciência de dados",
         "Visão geral das 6 etapas que estruturam o resto do curso",
     )
 
+    # 12. O que é o ciclo
     build_conceito(
         12,
         "O que é o ciclo",
@@ -1476,6 +1906,7 @@ def main() -> None:
         citation="Nunes (2019); James et al. (2021)",
     )
 
+    # 13. As 6 etapas do ciclo
     build_diagrama_6_etapas(
         13,
         "As 6 etapas do ciclo",
@@ -1490,6 +1921,7 @@ def main() -> None:
         citation="Nunes (2019)",
     )
 
+    # 14. Etapas 1 e 2
     build_card(
         14,
         "Etapas 1 e 2: pergunta e mapeamento",
@@ -1502,6 +1934,7 @@ def main() -> None:
         citation="Nunes (2019)",
     )
 
+    # 15. Etapas 3 e 4
     build_card(
         15,
         "Etapas 3 e 4: coletar e tratar",
@@ -1514,6 +1947,7 @@ def main() -> None:
         citation="CNJ (2024)",
     )
 
+    # 16. Etapas 5 e 6
     build_card(
         16,
         "Etapas 5 e 6: analisar e apresentar",
@@ -1526,6 +1960,7 @@ def main() -> None:
         citation="Wheelan (2016)",
     )
 
+    # 17. Por que pensar em ciclo
     build_comparacao(
         17,
         "Por que pensar em ciclo?",
@@ -1546,6 +1981,7 @@ def main() -> None:
         citation="Nunes (2019); Susskind (2023)",
     )
 
+    # 18. Cadeia de custódia
     build_conceito(
         18,
         "Cadeia de custódia: do processo ao dado",
@@ -1558,13 +1994,15 @@ def main() -> None:
         accent="Analogia jurídica",
     )
 
+    # 19. Transição 03 — Etapa 1
     build_transicao(
         19,
-        "Tópico 3",
+        "03",
         "Etapa 1: transformar a pergunta",
         "Da pergunta jurídica vaga à pergunta investigável",
     )
 
+    # 20. O que é uma pergunta investigável
     build_conceito(
         20,
         "O que é uma pergunta investigável",
@@ -1576,10 +2014,11 @@ def main() -> None:
         citation="Nunes (2019); Katz e Bommarito (2013)",
     )
 
+    # 21. Critérios de uma boa pergunta
     build_card(
         21,
         "Critérios de uma boa pergunta",
-        "4 critérios não negociáveis",
+        "Quatro critérios não negociáveis",
         [
             "Específica: define matéria, período e jurisdição.",
             "Verificável: aponta para uma variável que existe ou é coletável.",
@@ -1589,6 +2028,7 @@ def main() -> None:
         citation="Nunes (2019); Katz e Bommarito (2013)",
     )
 
+    # 22. Antes e depois
     build_comparacao(
         22,
         "Antes e depois",
@@ -1601,14 +2041,15 @@ def main() -> None:
         ],
         "Pergunta investigável",
         [
-            "Revisões no TJSP, 2018–2024: a taxa de procedência do juízo X difere da média?",
+            "Revisões no TJSP, 2018 a 2024: a taxa de procedência do juízo X difere da média?",
             "Renovatórias: o tempo mediano até sentença subiu entre 2019 e 2024 na Capital?",
-            "Recursos de revisão, 2020–2024: qual a proporção de reformas a favor do recorrente?",
-            "Acordos, 2022–2024: o valor acordado é qual fração do valor da causa?",
+            "Recursos de revisão, 2020 a 2024: qual a proporção de reformas a favor do recorrente?",
+            "Acordos, 2022 a 2024: o valor acordado é qual fração do valor da causa?",
         ],
         citation="Nunes (2019); ABJ (relatórios)",
     )
 
+    # 23. Stat — alcance da pergunta certa
     build_stat(
         23,
         "O alcance da pergunta certa",
@@ -1617,6 +2058,7 @@ def main() -> None:
         citation="CNJ (2024); TJSP",
     )
 
+    # 24. Armadilhas comuns
     build_armadilhas(
         24,
         "Armadilhas comuns ao formular perguntas",
@@ -1637,17 +2079,19 @@ def main() -> None:
         citation="Huff (2016); Silver (2013)",
     )
 
+    # 25. Mini-caso XY&A
     build_card(
         25,
         "Mini-caso XY&A",
         "Da intuição à pergunta investigável",
         [
-            "Intuição do sócio: 'estamos perdendo mais renovatórias do que antes'.",
-            "Pergunta investigável: nas renovatórias do TJSP, 2018–2024, com parte PJ, qual a evolução anual da taxa de procedência em favor do locador?",
+            "Intuição do sócio: estamos perdendo mais renovatórias do que antes.",
+            "Pergunta investigável: nas renovatórias do TJSP, 2018 a 2024, com parte PJ, qual a evolução anual da taxa de procedência em favor do locador?",
             "Variáveis necessárias (já aparecem na Etapa 2): tipo de ação, ano da sentença, parte, desfecho.",
         ],
     )
 
+    # 26. Síntese da Etapa 1 (checklist)
     build_card(
         26,
         "Síntese da Etapa 1",
@@ -1661,13 +2105,15 @@ def main() -> None:
         citation="Nunes (2019)",
     )
 
+    # 27. Transição 04 — Etapa 2
     build_transicao(
         27,
-        "Tópico 4",
+        "04",
         "Etapa 2: mapear as informações",
         "Que variáveis responderiam à pergunta?",
     )
 
+    # 28. O que significa mapear
     build_conceito(
         28,
         "O que significa mapear",
@@ -1679,6 +2125,7 @@ def main() -> None:
         citation="Nunes (2019); Wheelan (2016)",
     )
 
+    # 29. Tipos de variável (revisita Aula 1)
     build_comparacao(
         29,
         "Tipos de variável (revisita da Aula 1)",
@@ -1694,11 +2141,12 @@ def main() -> None:
             "Valor da causa, valor de condenação, valor acordado.",
             "Data de distribuição, data da sentença, data de baixa.",
             "Tempo de tramitação, em dias.",
-            "Quantidade de recursos, de partes, de audiências.",
+            "Quantidade de recursos, partes, audiências.",
         ],
         citation="Wheelan (2016)",
     )
 
+    # 30. Tabela — variáveis na base TJSP
     build_tabela(
         30,
         "Variáveis disponíveis na base TJSP",
@@ -1715,6 +2163,7 @@ def main() -> None:
         col_widths=[1700000, 1300000, 2950000],
     )
 
+    # 31. De pergunta a variáveis
     build_card(
         31,
         "De pergunta a variáveis",
@@ -1727,18 +2176,20 @@ def main() -> None:
         citation="CNJ (2024); Wheelan (2016)",
     )
 
+    # 32. Três exemplos de mapeamento
     build_lista_numerada(
         32,
         "Três exemplos de mapeamento",
         [
-            "Pergunta: existe diferença entre acordos e sentenças no valor envolvido? → tipo de ação, desfecho, valor da causa, valor de condenação ou acordado.",
-            "Pergunta: há concentração de ações em poucas varas? → comarca, vara, ano de distribuição.",
-            "Pergunta: a taxa de procedência mudou após 2020? → tipo de ação, ano da sentença, desfecho.",
+            "Existe diferença entre acordos e sentenças no valor envolvido? → tipo de ação, desfecho, valor da causa, valor de condenação ou acordado.",
+            "Há concentração de ações em poucas varas? → comarca, vara, ano de distribuição.",
+            "A taxa de procedência mudou após 2020? → tipo de ação, ano da sentença, desfecho.",
         ],
         citation="Nunes (2019); ABJ (relatórios)",
-        item_size=1300,
+        accent="Da pergunta às variáveis necessárias",
     )
 
+    # 33. Exercício dirigido em sala
     build_card(
         33,
         "Exercício dirigido em sala",
@@ -1750,6 +2201,7 @@ def main() -> None:
         ],
     )
 
+    # 34. Tudo começa com uma TABELA
     build_conceito(
         34,
         "Tudo começa com uma TABELA",
@@ -1762,6 +2214,7 @@ def main() -> None:
         accent="Insight da Etapa 2",
     )
 
+    # 35. Tabela analítica como petição inicial
     build_conceito(
         35,
         "Tabela analítica como petição inicial",
@@ -1774,37 +2227,34 @@ def main() -> None:
         accent="Analogia jurídica",
     )
 
-    build_lista_numerada(
+    # 36. Síntese do Bloco 1
+    build_sintese(
         36,
-        "Síntese do Bloco 1",
         [
             "Toda análise jurimétrica começa por uma pergunta investigável e termina em uma decisão concreta.",
             "O ciclo de 6 etapas é o método reproduzível, rastreável e defensável que sustenta cada análise.",
             "Etapa 1: pergunta específica, verificável, comparável e útil.",
             "Etapa 2: tabela com 1 linha por processo e 1 coluna por variável, saneada e completa.",
+            "Sem Etapa 1 e 2 bem feitas, análise vira opinião com cara de número.",
         ],
-        citation="Nunes (2019); Wheelan (2016)",
-        item_size=1500,
     )
 
-    build_card(
+    # 37. Ponte para o Bloco 2
+    build_ponte(
         37,
-        "Ponte para o Bloco 2",
-        "O que vem agora",
+        "Da Etapa 2 à coleta",
+        "No próximo bloco entramos na Etapa 3: como obter os dados em fontes públicas e internas.",
         [
-            "No próximo bloco entramos na Etapa 3 do ciclo: coletar as informações em fontes públicas (DataJud, tribunais), internas, scraping e APIs.",
-            "Discutiremos LGPD, vieses de amostragem e como foi montada a base dos 16.110 julgados do XY&A.",
-            "Ao final do Bloco 2 vem a Atividade Prática 2, com 3 questões (entrega até a Aula 3).",
+            ("DataJud, CNJ e tribunais", "Fontes públicas e como ler os campos dos microdados."),
+            ("Coleta interna e scraping", "Quando construir, quando comprar e quando raspar."),
+            ("LGPD e vieses de amostragem", "Cuidados antes de prometer resposta."),
+            ("Atividade Prática 2", "3 questões sobre a base do XY&A, entrega até a Aula 3."),
         ],
     )
 
-    # Atividade Prática 2 não vai aqui: por regra, atividade só aparece no
-    # Bloco 2 das aulas, e sempre com 3 questões numeradas. Ela será
-    # apresentada no slide de Atividade do build_aula2_bloco2.py.
-
+    # 38. Referências do Bloco
     build_referencias(
         38,
-        "Referências do bloco",
         [
             "NUNES, Marcelo Guedes. Jurimetria: como a estatística pode reinventar o Direito. 2. ed. São Paulo: Revista dos Tribunais, 2019.",
             "WHEELAN, Charles. Estatística: o que é, para que serve, como funciona. Rio de Janeiro: Zahar, 2016.",
@@ -1818,7 +2268,12 @@ def main() -> None:
         ],
     )
 
-    build_encerramento(39)
+    # 39. Fim do Bloco 1
+    build_encerramento_b1(
+        39,
+        bloco_n=1,
+        proximo_bloco_gancho="Etapa 3 (coletar), LGPD, vieses e a Atividade Prática 2.",
+    )
 
     update_content_types(39)
     update_presentation(39)

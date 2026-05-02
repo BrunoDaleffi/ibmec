@@ -16,17 +16,8 @@
 
 | Bloco | Tema | Slides |
 |-------|------|--------|
-| 1 | Correção das 3 questões da Atividade 1 + ciclo + Etapas 1 (pergunta) e 2 (mapear) | [aula2_bloco1_jurimetria.pptx](slides/aula2_bloco1_jurimetria.pptx) ⚠ |
+| 1 | Correção das 3 questões da Atividade 1 + ciclo + Etapas 1 (pergunta) e 2 (mapear) | [aula2_bloco1_jurimetria.pptx](slides/aula2_bloco1_jurimetria.pptx) |
 | 2 | Etapa 3 (coletar): fontes, scraping, APIs, LGPD, vieses + Atividade Prática 2 (3 questões) | _a produzir_ |
-
-> ⚠ **Pendência de retrabalho de fundos.** O `aula2_bloco1_jurimetria.pptx`
-> foi gerado antes da consolidação do padrão visual. Os fundos `image1.png`
-> e `image2.png` estão **invertidos** em relação à norma fixada pela Aula 1
-> (ver `.cursor/skills/build-aula-pptx/layout-canonical.md` seção 1).
-> Trocar o `Target` do `rId3` em cada `slideN.xml.rels` antes da próxima
-> entrega: `image1.png` em capa/transição/encerramento; `image2.png` em
-> agenda, objetivos, conexão, conteúdo, síntese, ponte, referências e
-> slides de correção.
 
 > **Política de atividades.** A Atividade Prática só aparece no Bloco 2,
 > sempre com **3 questões numeradas (Q1, Q2, Q3)**. Por isso, o Bloco 1
