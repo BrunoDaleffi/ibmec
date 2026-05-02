@@ -129,10 +129,10 @@ df = load_raw_csv("processos.csv")
 
 | Aula | Tema | Pasta |
 | ---- | ---- | ----- |
-| 1 | Introdução à Jurimetria | [`aulas/aula_01`](aulas/aula_01) |
-| 2 | _A definir_ | [`aulas/aula_02`](aulas/aula_02) |
-| 3 | _A definir_ | [`aulas/aula_03`](aulas/aula_03) |
-| 4 | _A definir_ | [`aulas/aula_04`](aulas/aula_04) |
-| 5 | _A definir_ | [`aulas/aula_05`](aulas/aula_05) |
+| 1 | Fundamentos de Jurimetria e Análise de Dados no Direito | [`aulas/aula_01`](aulas/aula_01) |
+| 2 | O Ciclo da Ciência de Dados Aplicado ao Direito (Parte 1) | [`aulas/aula_02`](aulas/aula_02) |
+| 3 | O Ciclo da Ciência de Dados Aplicado ao Direito (Parte 2) | [`aulas/aula_03`](aulas/aula_03) |
+| 4 | Inferência, 4 Modelos Preditivos e Estratégia de Acordo | [`aulas/aula_04`](aulas/aula_04) |
+| 5 | Aceleração com IA Generativa | [`aulas/aula_05`](aulas/aula_05) |
 
 Detalhes completos no plano de ensino: [`docs/plano_curso.docx`](docs/plano_curso.docx).

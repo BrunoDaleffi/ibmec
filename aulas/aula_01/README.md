@@ -11,6 +11,10 @@
 - `slides/aula1_bloco1_jurimetria.pptx` — apresentação do bloco 1
 - `slides/aula1_bloco2_jurimetria.pptx` — apresentação do bloco 2
 
+Estes dois arquivos são a **referência visual canônica** para layout e
+tipografia de **todas** as outras aulas. Ver
+`.cursor/skills/build-aula-pptx/layout-canonical.md` no repositório.
+
 ## Notebooks
 
 Os notebooks da aula ficam em `notebooks/`. Para abrir:
