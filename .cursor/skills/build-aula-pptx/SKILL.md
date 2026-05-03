@@ -65,7 +65,10 @@ Antes de planejar slides, leia (se ainda não estiverem no contexto):
 - [`layout-canonical.md`](layout-canonical.md) — **obrigatório:** tipos de
   slide padronizados (capa, agenda, objetivos, transição, correção,
   atividade, etc.) com referência aos XML da **Aula 1**; faixa amarela sob H1
-  em conteúdo; checklist de paridade visual.
+  em conteúdo; checklist de paridade visual. Inclui o **catálogo §14a de
+  design "estiloso" replicável** (Venn 3 círculos, cards 2×2 numerados,
+  comparação em cards coloridos, tabela com coluna semântica, etc.) com
+  slide-fonte da Aula 1 para copiar.
 - [`design-system.md`](design-system.md) — paleta, tipografia, áreas úteis,
   regras invioláveis do layout (image1.png/image2.png como fundos).
 - [`content-rules.md`](content-rules.md) — proibição de travessões,
@@ -140,6 +143,17 @@ com a convenção antiga (slide1.xml = `image2.png`, slide2.xml =
 oposto: `image1.png` é o fundo "forte" usado em capa/transição/fim e
 `image2.png` é o fundo "suave" usado nos demais slides.
 
+> **PNGs físicos do template estão trocados em relação à convenção
+> canônica.** Todo build script novo deve, em ordem, no `main()`:
+> (1) `unpack_layout_fresh()` com `--force` para apagar
+>     `/tmp/deck_aulaX_blocoY/` antes do unpack;
+> (2) `swap_media_para_aula1()` **idempotente** (compara
+>     `md5(image1.png)` com `b0987cbbb2c05a7cebbd3bac3576c0bb` e só
+>     troca se estiver fora do estado canônico).
+> Receita pronta em [`layout-canonical.md` §1.1](layout-canonical.md).
+> Esquecer o `--force` ou usar swap não-idempotente causa double-swap
+> e deck com fundos invertidos (incidente 2026-05-02).
+
 Por isso, ao duplicar do template, o **molde** (`slide1.xml` ou
 `slide2.xml`) é escolhido pelo **fundo** que ele já carrega, não pelo
 papel pedagógico do nome. Use a tabela:
@@ -199,6 +213,18 @@ o relacionamento, então só falta a ordem dentro de `<p:sldIdLst>`.
 
 ### 8. Empacotar
 
+**Antes** de empacotar, valide a área útil de todos os slides:
+
+```bash
+uv run python .cursor/skills/build-aula-pptx/scripts/check_useful_area.py \
+  /tmp/deck_aulaX_blocoY/
+```
+
+O deck só pode ser empacotado quando o validador retornar zero violações
+`[hard]`. Warnings `[soft]` indicam shapes que extrapolam a zona segura
+recomendada da Aula 1 — aceitáveis em diagramas full-bleed e em casos
+específicos, mas precisam ser justificados.
+
 ```bash
 uv run python .cursor/skills/build-aula-pptx/scripts/pack_pptx.py \
   /tmp/deck_aulaX_blocoY/ aulas/aula_X/slides/aulaX_blocoY_jurimetria.pptx
@@ -252,7 +278,9 @@ confirme as correções e finalize.
 - [ ] 35 a 45 slides, alvo ~40.
 - [ ] Capa, transições de tópico e encerramento usam fundo `image1.png` intacto.
 - [ ] Demais slides (agenda, objetivos, conexão, conteúdo, síntese, ponte, referências, atividade prática, correção) usam fundo `image2.png` intacto.
+- [ ] **`md5sum ppt/media/image1.png` no `.pptx` final = `b0987cbbb2c05a7cebbd3bac3576c0bb`** (canônico Aula 1). Se não bater, o swap não rodou ou rodou em dobro — não entregar.
 - [ ] Nenhum slide invade faixa amarela ou cobre logo.
+- [ ] **`check_useful_area.py` retorna zero hard violations** (área útil canônica respeitada — ver `layout-canonical.md` seção 0).
 - [ ] Paleta respeitada (navy `#1B2A4A`, amarelo `#E8A317`, cinza, branco).
 - [ ] Todos os tópicos do bloco do plano presentes e na ordem.
 - [ ] Nenhum slide só de texto (todos têm ícone, forma, número, card, chart ou diagrama).

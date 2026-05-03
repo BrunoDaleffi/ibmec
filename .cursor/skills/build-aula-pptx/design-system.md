@@ -42,18 +42,28 @@ identidade visual da disciplina. **Nenhuma exceção.**
 
 3. **Dimensões do slide:** `9144000 × 5143500` EMU (16:9). Nunca alterar.
 
-4. **Área útil em slides de conteúdo** (dentro da moldura branca de
-   `image2.png`) — respeite estes limites para não invadir a moldura cinza
-   nem a faixa amarela:
-   - `x` de **750000** a **6700000** EMU (largura útil ≈ 5950000)
-   - `y` de **500000** a **4500000** EMU (a Aula 1 posiciona o H1 a partir de
-     **500000**; use **600000** apenas se precisar de respiro extra, mas
-     prefira alinhar com a Aula 1)
+4. **Área útil obrigatória.** Toda forma precisa caber dentro do **hard
+   limit** da moldura branca do template (calibrado pelos extremos da
+   Aula 1 publicada). Use o **soft limit** para conteúdo regular:
+   - **Hard limit (não passar):** `x ∈ [400000, 7970000]`,
+     `y ∈ [400000, 4685000]`. Vale para qualquer tipo de slide (a moldura
+     branca é a mesma).
+   - **Soft limit (recomendado para conteúdo regular):**
+     `x ∈ [750000, 7700000]`, `y ∈ [500000, 4650000]`.
+   - **Soft limit por tipo especial** (capa, transição, encerramento):
+     ver `layout-canonical.md` seção 0.2.
 
-5. **Área útil em slides de capa/transição/encerramento** (`image1.png`):
-   mesma caixa branca à esquerda, mas eixo de texto alinhado a `x≈1097275`
-   (capa e transição) ou `x≈822950` (encerramento), com títulos grandes
-   como na Aula 1. Detalhes em `layout-canonical.md` seções 3, 4 e 11.
+   Validador obrigatório antes de empacotar:
+   ```bash
+   uv run python .cursor/skills/build-aula-pptx/scripts/check_useful_area.py \
+     /tmp/deck_aulaX_blocoY/
+   ```
+   O deck só pode ser empacotado quando o validador retornar zero erros
+   `[hard]`.
+
+5. **Eixo dos slides especiais** (`image1.png`): eixo de texto alinhado a
+   `x≈1097275` (capa e transição) ou `x≈822950` (encerramento), com títulos
+   grandes como na Aula 1. Detalhes em `layout-canonical.md` seções 3, 4 e 11.
 
 6. **Logo ibmec e selo "ibmec.br"** já estão dentro das imagens de fundo.
    Não adicionar outro logo. Não cobrir os cantos onde eles aparecem.
@@ -96,6 +106,20 @@ pontual. **Nunca** preencher mais de ~15% do slide com amarelo sólido.
   amarelos.
 - Cards com borda fina navy ou fundo `#F4F4F4`.
 - Setas, timelines e fluxos em navy com nós amarelos.
+
+### Design "estiloso" da Aula 1 — replicável em conteúdo
+
+A Aula 1 publicada usa, **dentro da paleta e tipografia canônicas**,
+composições mais elaboradas (Venn de 3 círculos com sobreposição,
+cards 2×2 com selo numerado, comparação em 2 cards de cores diferentes,
+tabela com coluna semântica e caixa de insight pastel, etc.). **Esse
+tipo de design pode e deve ser replicado em slides de conteúdo de
+qualquer aula** sempre que ajudar a explicação, **desde que** o
+cabeçalho padrão (H1 + faixa amarela), a paleta acima e os limites de
+área útil sejam respeitados.
+
+Catálogo com slide-fonte de cada padrão e princípios de uso:
+[`layout-canonical.md` §14a](layout-canonical.md).
 
 ## O que NUNCA fazer
 

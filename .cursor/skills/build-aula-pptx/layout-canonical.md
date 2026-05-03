@@ -16,6 +16,89 @@ re-derive medidas; copie.
 
 ---
 
+## 0. Área útil obrigatória (regra absoluta)
+
+Toda forma (`<p:sp>`, `<p:pic>`, `<p:graphicFrame>`, `<p:cxnSp>`) precisa
+caber dentro da **área útil canônica do tipo do slide**, medida em EMU.
+As caixas abaixo foram extraídas medindo a moldura branca do template
+(`docs/templates/layout.pptx`, ambos os PNGs de fundo) e os 49+42 slides
+da Aula 1 publicada. Slide 16:9 = `9144000 × 5143500` EMU.
+
+A regra opera em **duas camadas**:
+
+- **Hard limit (obrigatório):** delimita a moldura branca do template.
+  Qualquer shape com `(x, y, x+cx, y+cy)` fora desta caixa **invade a
+  moldura cinza ou a faixa amarela direita do template** e o slide está
+  em violação. Sem exceções.
+- **Soft limit (recomendado):** zona em que a Aula 1 mantém ~95% do
+  conteúdo. Use sempre que possível; saídas só são aceitáveis para
+  diagramas/imagens full-bleed (ver Aula 1 B1 slide 22).
+
+> **Regra de ouro.** Para qualquer shape `S` em um slide do tipo `T`:
+> `S.x ≥ x_min_hard(T)`, `S.y ≥ y_min_hard(T)`,
+> `S.x + S.cx ≤ x_max_hard(T)`, `S.y + S.cy ≤ y_max_hard(T)`.
+> Se extrapolar o hard limit, o slide está em violação — encurte texto,
+> reduza `cx/cy` ou recoloque, **não** empurre o limite.
+
+### 0.1 Slides padrão (estruturais) e slides de conteúdo
+
+Aplica-se a: agenda, objetivos, conexão, síntese, ponte, referências,
+atividade prática **e** a todo slide de conteúdo com cabeçalho padrão.
+Fundo: `image2.png`. Cabeçalho padrão (seção 2) é obrigatório quando
+houver H1 textual.
+
+| Camada | x_min | y_min | x_max | y_max | Largura | Altura |
+|---|---|---|---|---|---|---|
+| **Hard limit (não passar)** | `400000` | `400000` | `7970000` | `4685000` | 7570000 | 4285000 |
+| **Soft limit (recomendado)** | `750000` | `500000` | `7700000` | `4650000` | 6950000 | 4150000 |
+
+Subzonas internas (top-down) — usar dentro do soft limit:
+
+| Subzona | y_min | y_max | Uso |
+|---|---|---|---|
+| Cabeçalho (H1 + faixa amarela + subtítulo amarelo opcional) | `500000` | `1700000` | Conteúdo do tipo "título" — ver seção 2. |
+| Corpo | `1700000` | `4300000` | Cards, listas, diagramas, comparações. |
+| Citação de rodapé | `4350000` | `4650000` | `Autor (ano)` em Arial Italic, ver seção 15. |
+
+> Para diagramas full-bleed sem H1 (raríssimos, ver Aula 1 B1 slide 22),
+> shapes podem chegar até o **hard limit**. Slides com H1 textual sempre
+> respeitam o soft limit.
+
+### 0.2 Slides especiais (capa, transição, encerramento)
+
+Cada um tem geometria própria — duplicam de `slide2.xml` do template
+(fundo `image1.png`). Os limites abaixo são obrigatórios:
+
+| Tipo | Camada | x_min | y_min | x_max | y_max |
+|---|---|---|---|---|---|
+| **Capa do bloco** | hard | `400000` | `400000` | `7970000` | `4685000` |
+| Capa do bloco | soft (Aula 1) | `1097275` | `914400` | `7887775` | `3900000` |
+| **Transição de tópico (01, 02, …)** | hard | `400000` | `400000` | `7970000` | `4685000` |
+| Transição | soft (Aula 1) | `1097275` | `900000` | `7600000` | `3905000` |
+| **Encerramento ("Fim do Bloco N"/"Aula N")** | hard | `400000` | `400000` | `7970000` | `4685000` |
+| Encerramento | soft (Aula 1) | `820000` | `914400` | `7745000` | `3300000` |
+
+Capa, transição e encerramento usam o **mesmo hard limit** dos demais
+(é a mesma moldura branca). O soft limit é mais apertado por **design**:
+o eixo de texto fica deslocado à direita (alinhado a `x≈1097275` em
+capa/transição, `x≈822950` em encerramento) para criar a respiração
+canônica desses slides especiais.
+
+### 0.3 Validação automática (obrigatória)
+
+Antes de empacotar, rode o validador de área útil:
+
+```bash
+uv run python .cursor/skills/build-aula-pptx/scripts/check_useful_area.py \
+  /tmp/deck_aulaX_blocoY/
+```
+
+O script falha (exit 1) se algum shape ultrapassa o **hard limit**.
+Soft-limit é apenas avisado (warning prefixado por `[soft]`). O deck só
+deve ser empacotado quando o validador retornar zero erros hard.
+
+---
+
 ## 1. Regra de fundos (image1.png × image2.png)
 
 A Aula 1 fixa o seguinte uso (e este é o padrão da disciplina):
@@ -42,6 +125,79 @@ precisar trocar o fundo de uma cópia.
 > capa/transição/fim, `image1` para conteúdo). A Aula 1 publicada usa o
 > que está acima e passa a ser **norma**. A Aula 2 · Bloco 1 já entregue
 > está com os fundos invertidos e está marcada para retrabalho.
+
+### 1.1 Bug do template e protocolo obrigatório de build
+
+O `docs/templates/layout.pptx` foi exportado com os PNGs físicos
+**trocados** em relação à convenção canônica acima:
+
+| Arquivo no template | Conteúdo visual real |
+|---|---|
+| `layout.pptx::ppt/media/image1.png` | fundo "suave" (deveria ser image2) |
+| `layout.pptx::ppt/media/image2.png` | fundo "forte" (deveria ser image1) |
+
+Por isso, **todo build script de aula nova precisa, no `main()`**:
+
+1. **Unpack fresco do template**, sempre com `--force` (apaga
+   `/tmp/deck_aulaX_blocoY/` antes). Isso garante que a função de swap
+   parte de um estado conhecido. Esquecer essa etapa foi causa de
+   double-swap em build anterior (incidente 2026-05-02).
+2. **Rodar `swap_media_para_aula1()` idempotente**: troca
+   `image1.png` ↔ `image2.png` apenas se `md5(image1.png) !=
+   b0987cbbb2c05a7cebbd3bac3576c0bb` (md5 canônico da Aula 1
+   publicada). Se já estiver no estado canônico, a função retorna sem
+   tocar nos arquivos. Idempotência elimina o double-swap mesmo se a
+   função for chamada múltiplas vezes.
+3. **Os `.rels` dos slides devem apontar diretamente** para
+   `image1.png` (capa, transição, fim) ou `image2.png` (todo o resto).
+   Não inverta os nomes nos `.rels` — a função de swap já cuida do
+   mapeamento físico.
+
+Implementação de referência (copie em todo build novo):
+
+```python
+CANONICAL_IMAGE1_MD5 = "b0987cbbb2c05a7cebbd3bac3576c0bb"
+
+def unpack_layout_fresh() -> None:
+    import shutil, subprocess
+    if DECK.exists():
+        shutil.rmtree(DECK)
+    layout = Path("docs/templates/layout.pptx").resolve()
+    subprocess.run(
+        [
+            "uv", "run", "python",
+            ".cursor/skills/build-aula-pptx/scripts/unpack_pptx.py",
+            "--force",
+            str(layout),
+            str(DECK),
+        ],
+        check=True,
+    )
+
+def swap_media_para_aula1() -> None:
+    import hashlib
+    media = DECK / "ppt/media"
+    img1 = media / "image1.png"
+    img2 = media / "image2.png"
+    if not (img1.is_file() and img2.is_file()):
+        return
+    if hashlib.md5(img1.read_bytes()).hexdigest() == CANONICAL_IMAGE1_MD5:
+        return  # já está canônico, idempotente
+    tmp = media / ".swap.png"
+    img1.rename(tmp)
+    img2.rename(img1)
+    tmp.rename(img2)
+
+def main() -> None:
+    unpack_layout_fresh()    # sempre primeiro
+    swap_media_para_aula1()  # idempotente
+    # ... gerar slides ...
+```
+
+**Verificação obrigatória após empacotar:** `md5sum
+ppt/media/image1.png` no `.pptx` final deve bater com
+`b0987cbbb2c05a7cebbd3bac3576c0bb`. Se não bater, o swap foi pulado ou
+duplicado e o deck está com fundos invertidos — **não entregar**.
 
 ---
 
@@ -89,12 +245,23 @@ Geometria diferente do cabeçalho estrutural — eixo horizontal alinhado a
 
 | Camada | off x | off y | cx | cy | sz | Fonte | Cor | Texto |
 |---|---|---|---|---|---|---|---|---|
-| Título da disciplina (caixa alta) | `1097275` | `914400` | `6790500` | `1828800` | `3600` | Arial Black | `#1B2A4A` | `JURIMETRIA E ANÁLISE DE DADOS PARA DECISÕES ESTRATÉGICAS` |
+| Título da disciplina (caixa alta) | `1097275` | `914400` | `6790500` | `1828800` | **`3200`** | Arial Black | `#1B2A4A` | `JURIMETRIA E ANÁLISE DE DADOS PARA DECISÕES ESTRATÉGICAS` |
 | Faixa amarela horizontal | `1097280` | `2788920` | `1828800` | `54864` | — | — | `#E8A317` | (vazio) |
 | Linha "Aula X – Bloco Y" | `1097280` | `2926080` | `5486400` | `457200` | `2000` | Arial | `#E8A317` | `Aula X – Bloco Y` |
 | Subtítulo do bloco (cinza) | `1097280` | `3337560` | `5486400` | `365760` | `1400` | Arial | `#666666` | Frase do tema, máx. 2 linhas |
 
 **Fundo:** `image1.png`.
+
+> **Por que `sz=3200` e não `sz=3600`?** A versão original (Aula 1
+> publicada) usa `sz=3600`. Em renderizadores que carregam a Arial Black
+> real (PowerPoint, LibreOffice GUI, Keynote), `sz=3600` faz o título de
+> 53 caracteres quebrar em **4 linhas** e a 4ª linha (`ESTRATÉGICAS`)
+> sobrepõe a faixa amarela e a linha `Aula X – Bloco Y`. O `soffice
+> --headless` usado no QA local cai num fallback de fonte mais estreito
+> e não detecta o estouro. `sz=3200` reduz o título 11% mas garante 3
+> linhas em qualquer renderizador. **Este é o tamanho canônico a partir
+> de 2026-05-02; a Aula 1 publicada está marcada para retrabalho neste
+> ponto.**
 
 ---
 
@@ -105,12 +272,21 @@ Mesma geometria nas demais transições da Aula 1 (slides 12, 17, 20, 26, 31, 34
 
 | Camada | off x | off y | cx | cy | sz | Fonte | Cor | Texto |
 |---|---|---|---|---|---|---|---|---|
-| Número grande | `1097275` | `900000` | `1800000` | `1100000` | **`9600`** (96pt) | Arial Black | `#E8A317` | `01`, `02`, … |
+| Número grande | `1097275` | `900000` | **`2400000`** | `1100000` | **`9600`** (96pt) | Arial Black | `#E8A317` | `01`, `02`, … |
 | Título do tópico | `1097275` | `2100000` | `6500000` | `1100000` | `3600` | Arial Black | `#1B2A4A` | Nome do tópico |
 | Faixa amarela | `1097280` | `3250000` | `1500000` | `54864` | — | — | `#E8A317` | (vazio) |
 | Subtítulo cinza | `1097280` | `3400000` | `5486400` | `500000` | `1400` | Arial | `#666666` | Frase de contexto |
 
 **Fundo:** `image1.png`.
+
+> **Por que `cx=2400000` e não `cx=1800000`?** A versão original
+> (Aula 1 publicada) usa `cx=1800000`. Com Arial Black real a 96pt,
+> "01"/"02"/... ocupa ~1.7M EMU; com `cx=1800000` e os insets padrão
+> (lIns=rIns=91440), a largura útil cai para ~1.62M EMU e o segundo
+> dígito quebra para a linha de baixo, sobrepondo o título. `cx=2400000`
+> dá margem segura. Vale o mesmo aviso da capa: o `soffice --headless`
+> não detecta a quebra. **Tamanho canônico a partir de 2026-05-02; Aula 1
+> publicada está marcada para retrabalho.**
 
 ---
 
@@ -364,6 +540,49 @@ Para os corpos específicos (stat callout, comparação 2 colunas, card,
 tabela, citação), use os snippets em
 [`slide-templates.md`](slide-templates.md).
 
+### 14a. Design "estiloso" da Aula 1 — replicável em qualquer slide de conteúdo
+
+A Aula 1 publicada usa, **dentro do cabeçalho padrão e da paleta
+canônica**, composições mais elaboradas que misturam caixas, formas,
+cores e geometria. **Esse tipo de design é permitido e encorajado em
+qualquer slide de conteúdo** (Aulas 2 a 6) sempre que ajudar a
+explicação. O cabeçalho padrão (H1 + faixa amarela + subtítulo
+amarelo) e a paleta da seção 6.0 do `instrucao_geral.md` continuam
+obrigatórios; o que varia é o **corpo** do slide.
+
+Catálogo de padrões já validados na Aula 1 (com slide-fonte para copiar):
+
+| Padrão | Slide-fonte | Composição |
+|---|---|---|
+| **Diagrama de Venn 3 círculos** | `aula1_bloco1/slide22.xml` | 3 elipses semitransparentes (navy, amarelo, azul claro) sobrepostas + rótulos brancos no centro de cada uma + card lateral cinza com legenda das interseções. |
+| **Cards 2×2 com selo numerado** | `aula1_bloco1/slide36.xml` | 4 `roundRect` com borda navy fina + elipse amarela com número branco + título navy + descrição cinza. Grade 2 colunas × 2 linhas. |
+| **Comparação 2 colunas com cards coloridos** | `aula1_bloco1/slide43.xml` | 2 `roundRect` lado a lado: esquerda fundo `#F4F4F4`, direita fundo `#FCE5CD` (pastel amarelo). Tag em caps no topo, bullets quadrados amarelos, frase de fechamento em italic abaixo. |
+| **Tabela com coluna semântica** | `aula1_bloco1/slide38.xml` | Tabela `<a:tbl>` com cabeçalho navy + linhas zebradas + última coluna com cores semânticas (verde negativo, navy base, amarelo positivo) + caixa de "Insight" com fundo `#FCE5CD` abaixo. |
+| **Comparação 2 colunas (tabela)** | `aula1_bloco1/slide29.xml` | Tabela `<a:tbl>` com primeira coluna em bold navy (rótulo da dimensão) e duas colunas de comparação. Cabeçalho navy. |
+| **Quadro de stat secundário** | `aula1_bloco1/slide14.xml` (Panorama Financeiro) | 3 stat callouts pequenos lado a lado: número grande amarelo + label cinza, com leve `roundRect` de fundo. |
+
+Princípios para usar livremente:
+
+- **Mantenha a paleta** (`#1B2A4A` navy, `#E8A317` amarelo, `#666666`/
+  `#333333` cinza, `#F4F4F4` neutro, `#FCE5CD` pastel amarelo,
+  `#FFFFFF` branco). Nunca introduzir cor nova.
+- **Mantenha a tipografia** da seção 6 do `design-system.md`. Variações
+  são em peso (bold/regular), tamanho e cor — não em fonte.
+- **Use `prstGeom`** para formas: `rect`, `roundRect` (`adj≈6500`),
+  `ellipse`, `triangle`, `chevron`, `arrow`, `diamond`. Combinações
+  geométricas são bem-vindas (ex.: elipses sobrepostas para Venn,
+  `roundRect` aninhados para card-em-card).
+- **Limites de área útil da seção 0.1 valem igual.** O design pode ser
+  rico, mas tem que caber dentro do `(750000–7700000) × (500000–4650000)`
+  EMU do soft limit (ou no hard limit em casos excepcionais).
+- **Faixa amarela canônica sob o H1 segue obrigatória** em todo slide
+  com H1 textual, mesmo nos mais elaborados.
+- **Citação `Autor (ano)` no rodapé interno** continua obrigatória
+  quando o slide introduz conceito.
+
+Quando duplicar um padrão, **desempacote o `.pptx` da Aula 1 e copie o
+XML do slide-fonte** indicado na tabela. As medidas estão lá, calibradas.
+
 ---
 
 ## 15. Outros padrões visuais da Aula 1 incorporados como regra
@@ -388,6 +607,7 @@ para texto sobre cards navy.
 Antes de fechar qualquer bloco, confronte cada slide do tipo abaixo com
 o slide-fonte indicado:
 
+- [ ] **Área útil canônica:** `check_useful_area.py` retorna 0 hard violations (seção 0).
 - [ ] **Capa** confronta com `aula1_blocoY/slide1.xml` (medidas seção 3).
 - [ ] **Agenda** confronta com `aula1_blocoY/slide{3 ou 2}.xml` (seção 5).
 - [ ] **Objetivos** confronta com `aula1_blocoY/slide{4 ou 3}.xml` (seção 6).

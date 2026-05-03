@@ -139,7 +139,7 @@ Slide-fonte: `aula1_blocoY/slide1.xml`. Fundo: `image1.png`.
     <a:lstStyle/>
     <a:p><a:pPr algn="l"/>
       <a:r>
-        <a:rPr lang="pt-BR" sz="3600" b="1">
+        <a:rPr lang="pt-BR" sz="3200" b="1">
           <a:solidFill><a:srgbClr val="1B2A4A"/></a:solidFill>
           <a:latin typeface="Arial Black"/>
         </a:rPr>
@@ -213,11 +213,12 @@ Slide-fonte: `aula1_blocoY/slide1.xml`. Fundo: `image1.png`.
 Slide-fonte: `aula1_bloco1/slide6.xml`. Fundo: `image1.png`.
 
 ```xml
-<!-- Número grande amarelo -->
+<!-- Número grande amarelo. cx=2400000 (não 1800000) para evitar quebra
+     horizontal de "01" a 96pt em renderizadores com Arial Black real. -->
 <p:sp>
   <p:nvSpPr><p:cNvPr id="300" name="TransicaoNumero"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
   <p:spPr>
-    <a:xfrm><a:off x="1097275" y="900000"/><a:ext cx="1800000" cy="1100000"/></a:xfrm>
+    <a:xfrm><a:off x="1097275" y="900000"/><a:ext cx="2400000" cy="1100000"/></a:xfrm>
     <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
   </p:spPr>
   <p:txBody>
@@ -1198,6 +1199,18 @@ prefixe `•` literal.
 Para tabelas curtas, prefira 3 caixas alinhadas como cabeçalho navy +
 linhas em retângulos cinza alternados (zebrado). Para tabelas com muitas
 linhas, use o elemento nativo `<a:graphicFrame><a:tbl>...</a:tbl></a:graphicFrame>`.
+
+---
+
+## 18. Padrões "estilosos" da Aula 1 (catálogo)
+
+Para composições mais elaboradas (Venn 3 círculos, cards 2×2 numerados,
+comparação em cards de cores diferentes, tabela com coluna semântica,
+caixa de insight pastel), o catálogo está em
+[`layout-canonical.md` §14a](layout-canonical.md), com o slide-fonte da
+Aula 1 para cada padrão. Em vez de re-derivar medidas, **desempacote o
+`.pptx` da Aula 1 e copie o XML do slide-fonte indicado** — geometria,
+cores e tipografia já estão calibradas e validadas em sala.
 
 ---
 

@@ -9,9 +9,12 @@ Convenção de fundos:
 - image2.png → todos os demais slides (agenda, objetivos, conexão, conteúdo,
   síntese, ponte, referências, slides de correção).
 
-O `layout.pptx` original tem o mapeamento invertido (`slide1.xml`→`image2.png`,
-`slide2.xml`→`image1.png`); este script grava `slideN.xml.rels` apontando
-diretamente para a mídia correta.
+O `layout.pptx` original tem o mapeamento invertido tanto nas rels quanto nos
+arquivos de mídia em si: o que está salvo como `image1.png` é o fundo "suave"
+(conteúdo) e o que está salvo como `image2.png` é o fundo "forte" (capa). Para
+alinhar à convenção da Aula 1 publicada (image1=capa/transição/fim,
+image2=conteúdo), `swap_media_para_aula1()` troca os dois arquivos físicos no
+deck desempacotado antes da geração dos slides.
 
 Pré-requisito: rodar antes
     uv run python .cursor/skills/build-aula-pptx/scripts/unpack_pptx.py \
@@ -466,7 +469,7 @@ def build_capa(
             [
                 {
                     "text": "JURIMETRIA E ANÁLISE DE DADOS PARA DECISÕES ESTRATÉGICAS",
-                    "sz": 3600,
+                    "sz": 3200,
                     "b": True,
                     "color": NAVY,
                     "font": "Arial Black",
@@ -541,14 +544,21 @@ def build_capa(
 
 
 def build_transicao(n: int, numero: str, titulo: str, subtitulo: str) -> None:
-    """Transição de tópico — fundo image1.png. Geometria da Aula 1 slide 6."""
+    """Transição de tópico — fundo image1.png. Geometria da Aula 1 slide 6.
+
+    cx do número grande alargado para 2400000 EMU para evitar quebra
+    horizontal de "01"/"02" em renderizadores que usam Arial Black real
+    (PowerPoint, LibreOffice GUI). O soffice headless usado no QA local
+    falha em detectar essa quebra porque cai num fallback de fonte mais
+    estreito.
+    """
     parts: list[str] = []
     parts.append(
         text_box(
             20,
             HERO_X,
             900000,
-            1800000,
+            2400000,
             1100000,
             [
                 {
@@ -1502,9 +1512,9 @@ def build_armadilhas(
 ) -> None:
     """Armadilhas em 3 cards verticais com borda amarela."""
     parts = canonical_header(title)
-    card_h = 700000
-    gap = 50000
-    base_y = 1800000
+    card_h = 820000
+    gap = 30000
+    base_y = 1750000
 
     for i, (label, body) in enumerate(items):
         y = base_y + i * (card_h + gap)
@@ -1758,9 +1768,67 @@ def update_presentation(slide_count: int) -> None:
 # ---------------------------------------------------------------------------
 
 
+CANONICAL_IMAGE1_MD5 = "b0987cbbb2c05a7cebbd3bac3576c0bb"
+"""md5 do image1.png da Aula 1 publicada (fundo "forte"
+capa/transição/fim). Se o image1.png do deck já tiver este hash, o
+swap não precisa rodar — função é idempotente."""
+
+
+def swap_media_para_aula1() -> None:
+    """Garante que image1.png seja o fundo "forte" (capa/transição/fim)
+    e image2.png o "suave" (conteúdo), conforme a Aula 1 publicada.
+
+    O `layout.pptx` template foi exportado com os PNGs físicos trocados
+    em relação à convenção canônica. Esta função alinha o estado físico
+    à convenção. **É idempotente:** se image1.png já é o canônico
+    "forte" (md5 == CANONICAL_IMAGE1_MD5), não faz nada. Isso evita o
+    bug de double-swap quando a função roda mais de uma vez no mesmo
+    deck unpacked.
+    """
+    import hashlib
+
+    media = DECK / "ppt/media"
+    img1 = media / "image1.png"
+    img2 = media / "image2.png"
+    if not (img1.is_file() and img2.is_file()):
+        return
+    current_md5 = hashlib.md5(img1.read_bytes()).hexdigest()
+    if current_md5 == CANONICAL_IMAGE1_MD5:
+        return
+    tmp = media / ".swap.png"
+    img1.rename(tmp)
+    img2.rename(img1)
+    tmp.rename(img2)
+
+
+def unpack_layout_fresh() -> None:
+    """Garante que /tmp/deck_aula2_bloco1/ é um unpack limpo do
+    layout.pptx oficial. Sempre rm -rf antes de unpack para evitar
+    estado residual de execuções anteriores (que podia causar
+    double-swap em image1/image2)."""
+    import shutil
+    import subprocess
+
+    if DECK.exists():
+        shutil.rmtree(DECK)
+    layout = Path("docs/templates/layout.pptx").resolve()
+    subprocess.run(
+        [
+            "uv", "run", "python",
+            ".cursor/skills/build-aula-pptx/scripts/unpack_pptx.py",
+            "--force",
+            str(layout),
+            str(DECK),
+        ],
+        check=True,
+    )
+
+
 def main() -> None:
+    unpack_layout_fresh()
     SLIDES.mkdir(parents=True, exist_ok=True)
     RELS.mkdir(parents=True, exist_ok=True)
+    swap_media_para_aula1()
 
     # 1. Capa
     build_capa(
@@ -1815,7 +1883,7 @@ def main() -> None:
     build_transicao(
         5,
         "01",
-        "Atividade 1: o que aprendemos",
+        "Atividade 1: revisão",
         "Correção comentada das 3 questões e ponte para o método desta aula",
     )
 
@@ -1876,7 +1944,7 @@ def main() -> None:
     # 10. Insight / ponte para o conteúdo novo
     build_conceito(
         10,
-        "Da pergunta solta à pergunta de dados",
+        "Da intuição à pergunta de dados",
         [
             "Toda intuição jurídica relevante pode ser convertida em uma pergunta investigável.",
             "Quando a pergunta é boa, a sequência fica clara: variáveis, fonte, coleta, análise e entrega. É o ciclo da próxima seção.",
@@ -1984,7 +2052,7 @@ def main() -> None:
     # 18. Cadeia de custódia
     build_conceito(
         18,
-        "Cadeia de custódia: do processo ao dado",
+        "Cadeia de custódia analítica",
         [
             "No processo penal, a cadeia de custódia garante que a prova chegue íntegra ao julgamento.",
             "Na Jurimetria, o ciclo cumpre o mesmo papel: cada etapa preserva e documenta a integridade dos dados.",
@@ -1998,7 +2066,7 @@ def main() -> None:
     build_transicao(
         19,
         "03",
-        "Etapa 1: transformar a pergunta",
+        "Etapa 1: a pergunta",
         "Da pergunta jurídica vaga à pergunta investigável",
     )
 
@@ -2041,10 +2109,10 @@ def main() -> None:
         ],
         "Pergunta investigável",
         [
-            "Revisões no TJSP, 2018 a 2024: a taxa de procedência do juízo X difere da média?",
-            "Renovatórias: o tempo mediano até sentença subiu entre 2019 e 2024 na Capital?",
-            "Recursos de revisão, 2020 a 2024: qual a proporção de reformas a favor do recorrente?",
-            "Acordos, 2022 a 2024: o valor acordado é qual fração do valor da causa?",
+            "Revisões TJSP 2018-2024: procedência do juízo X vs. média?",
+            "Renovatórias: tempo mediano até sentença subiu de 2019 a 2024?",
+            "Revisão 2020-2024: proporção de reformas a favor do recorrente?",
+            "Acordos 2022-2024: valor acordado vs. valor da causa?",
         ],
         citation="Nunes (2019); ABJ (relatórios)",
     )
@@ -2061,7 +2129,7 @@ def main() -> None:
     # 24. Armadilhas comuns
     build_armadilhas(
         24,
-        "Armadilhas comuns ao formular perguntas",
+        "Armadilhas ao formular",
         [
             (
                 "Pergunta de mão dupla disfarçada",
@@ -2109,7 +2177,7 @@ def main() -> None:
     build_transicao(
         27,
         "04",
-        "Etapa 2: mapear as informações",
+        "Etapa 2: mapeamento",
         "Que variáveis responderiam à pergunta?",
     )
 
