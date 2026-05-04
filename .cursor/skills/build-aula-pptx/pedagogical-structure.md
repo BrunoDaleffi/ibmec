@@ -1,6 +1,7 @@
-# Macroestrutura pedagógica de cada bloco (~40 slides)
+# Macroestrutura pedagógica de cada bloco (exatamente 40 slides)
 
-Cada bloco dura 1h50 (ritmo médio ≈ 2–3 min/slide, com variação).
+Cada bloco dura 1h50 (ritmo médio ≈ 2,75 min/slide). **Todo bloco tem
+exatamente 40 slides** (regra 2 da disciplina). Não 35, não 45. **40.**
 A macroestrutura é **diferente entre Bloco 1 e Bloco 2** por causa da
 política do Instrumento Avaliativo 1 (atividades em sala). Leia a
 regra abaixo antes de planejar qualquer slide.
@@ -34,43 +35,79 @@ o fechamento do Bloco 2 não são intercambiáveis.
 | Aula 5 · Bloco 2 | Não. | Não. Espaço para preparação do trabalho final. |
 | Aula 6 · Blocos 1 e 2 | Não. | Não. Apresentações dos trabalhos. |
 
-## Sequência padrão do Bloco 1 (~40 slides)
+## Sequência padrão do Bloco 1 (exatamente 40 slides)
+
+### Aulas 2 a 5 — Bloco 1 com correção da atividade anterior
 
 | # | Qtd | Tipo | Fundo | Função |
 |---|-----|------|-------|--------|
 | 1 | 1 | Capa do bloco | `image1.png` | Título da aula, "Aula X · Bloco 1" e tema |
-| 2 | 1 | Agenda | `image2.png` | Lista numerada dos tópicos do bloco (do plano) |
+| 2 | 1 | Agenda | `image2.png` | Lista numerada dos tópicos do bloco (do plano), até 8 itens |
 | 3 | 1 | Objetivos | `image2.png` | 3 a 5 objetivos em verbos de ação |
 | 4 | 1 | Conexão | `image2.png` | Liga ao caso XY&A ou ao trabalho final, quando couber |
-| 5 | 5–6 | **Correção da atividade da aula anterior** | misto | Aulas 2 a 5: 1 transição (`image1.png`) + 1 recap + **3 slides de correção (1 por questão)** + 1 insight/ponte (todos `image2.png`). **Não aplicável à Aula 1.** |
-| 6 | 27–32 | Núcleo | misto | 2 a 4 tópicos restantes, cada um com 1 transição (`image1.png`) + 6–10 slides de conteúdo (`image2.png`) |
+| 5 | 5 | **Correção da atividade da aula anterior** | misto | 1 transição "Atividade N: o que aprendemos" (`image1.png`) + 1 recap (`image2.png`) + **3 slides de correção (exatamente 1 por questão Q1, Q2, Q3)** (`image2.png`). |
+| 6 | 27 | Núcleo | misto | 2 a 4 tópicos restantes, cada um com 1 transição (`image1.png`) + 5 a 10 slides de conteúdo (`image2.png`). Soma fixa: 27 slides. |
 | 7 | 1 | Síntese | `image2.png` | 3 a 5 pontos-chave |
 | 8 | 1 | Ponte | `image2.png` | Para o Bloco 2 da mesma aula |
 | 9 | 1 | Referências | `image2.png` | Bibliografia consolidada do bloco (ABNT-like) |
-| 10 | 1 | Encerramento ("Fim do Bloco N") | `image1.png` | "Fim do Bloco N · Intervalo de 15 minutos" |
+| 10 | 1 | Encerramento ("Fim do Bloco 1") | `image1.png` | "Fim do Bloco 1 · Intervalo de 15 minutos" |
 
-> **Aula 1 · Bloco 1 é exceção.** Por ser o primeiro bloco do curso, não
-> tem correção de atividade no início. Os slides correspondentes viram
-> apresentação da disciplina, do caso XY&A e do trabalho final.
+**Soma:** 1+1+1+1+5+27+1+1+1+1 = **40 slides**.
 
-## Sequência padrão do Bloco 2 (~40 slides)
+### Aula 1 · Bloco 1 — exceção (sem correção anterior)
+
+Por ser o primeiro bloco do curso, **não tem correção de atividade no
+início**. Os 5 slides que cabiam à correção viram apresentação da
+disciplina, do caso XY&A e do trabalho final, e o núcleo cresce
+proporcionalmente:
+
+| # | Qtd | Tipo | Fundo | Função |
+|---|---|---|---|---|
+| 1 | 1 | Capa | `image1.png` | — |
+| 2 | 1 | Agenda | `image2.png` | — |
+| 3 | 1 | Objetivos | `image2.png` | — |
+| 4 | 1 | Conexão (Do Conceito ao Trabalho Final) | `image2.png` | — |
+| 5 | 32 | Núcleo (apresentação da disciplina + XY&A + trabalho final + tópicos do plano) | misto | Cada tópico com 1 transição + 5 a 10 slides. Soma fixa: 32 slides. |
+| 6 | 1 | Síntese | `image2.png` | — |
+| 7 | 1 | Ponte para o Bloco 2 | `image2.png` | — |
+| 8 | 1 | Referências | `image2.png` | — |
+| 9 | 1 | Encerramento ("Fim do Bloco 1") | `image1.png` | — |
+
+**Soma:** 1+1+1+1+32+1+1+1+1 = **40 slides** (idêntico ao gold standard
+publicado: 49 slides na Aula 1 B1 contam capa duplicada/intermediários
+do template; o deck final canônico passou a ser exatamente 40 a partir
+de 2026-05-03, regra 2).
+
+## Sequência padrão do Bloco 2 (exatamente 40 slides)
+
+### Aulas 1 a 4 — Bloco 2 com Atividade Prática
 
 | # | Qtd | Tipo | Fundo | Função |
 |---|-----|------|-------|--------|
 | 1 | 1 | Capa do bloco | `image1.png` | Título da aula, "Aula X · Bloco 2" e tema |
-| 2 | 1 | Agenda | `image2.png` | Lista numerada dos tópicos do bloco (do plano) |
+| 2 | 1 | Agenda | `image2.png` | Lista numerada dos tópicos do bloco |
 | 3 | 1 | Objetivos | `image2.png` | 3 a 5 objetivos em verbos de ação |
 | 4 | 1 | Conexão / "Voltando do intervalo" | `image2.png` | Retoma o que ficou em aberto no Bloco 1 |
-| 5 | 30–33 | Núcleo | misto | 3 a 5 tópicos, cada um com 1 transição (`image1.png`) + 6–10 slides de conteúdo (`image2.png`) |
-| 6 | 1–2 | Exercício / discussão | `image2.png` | Quando o plano indicar |
-| 7 | 1 | Síntese | `image2.png` | 3 a 5 pontos-chave |
-| 8 | 1 | **Atividade Prática N** | `image2.png` | **Apenas Bloco 2 das Aulas 1, 2, 3 e 4.** Não tem em Aulas 5 e 6. |
-| 9 | 1 | Ponte | `image2.png` | Para o próximo bloco/aula |
-| 10 | 1 | Referências | `image2.png` | Bibliografia consolidada do bloco (ABNT-like) |
-| 11 | 1 | Encerramento ("Fim da Aula N") | `image1.png` | "Fim da Aula N · Lembrete da Atividade · Próxima aula" |
+| 5 | 32 | Núcleo | misto | 3 a 5 tópicos, cada um com 1 transição (`image1.png`) + 5 a 10 slides de conteúdo (`image2.png`). Soma fixa: 32 slides. |
+| 6 | 1 | Síntese | `image2.png` | 3 a 5 pontos-chave |
+| 7 | 1 | **Atividade Prática N** | `image2.png` | **Um único slide** com o enunciado das 3 questões (Q1, Q2, Q3) e as instruções de entrega. |
+| 8 | 1 | Referências | `image2.png` | Bibliografia consolidada do bloco (ABNT-like) |
+| 9 | 1 | Encerramento ("Fim da Aula N") | `image1.png` | "Fim da Aula N · Lembrete da Atividade · Próxima aula" |
 
-**Alvo final:** ~40 slides. Bloco denso → até 45. Bloco mais expositivo
-e com muito exercício → pode cair para 36. **Nunca abaixo de 35.**
+**Soma:** 1+1+1+1+32+1+1+1+1 = **40 slides**.
+
+> Note que a Atividade Prática é **1 slide só** (o gold standard
+> `aula1_bloco2/slide38.xml` traz as 3 perguntas no mesmo slide). Ponte
+> não é mais um slide separado no Bloco 2 — a função de "ponte para a
+> próxima aula" é cumprida pelo próprio slide de encerramento ("Fim da
+> Aula N · Próxima aula: ementa em uma frase").
+
+### Aulas 5 e 6 — Bloco 2 sem Atividade Prática
+
+Bloco 2 da Aula 5: o slide de Atividade Prática vira "Preparação do
+trabalho final" (mesma posição #7); Bloco 2 da Aula 6: tudo é
+apresentação dos grupos. Soma continua **40 slides** em ambos os
+casos.
 
 ## Estrutura de cada tópico do núcleo
 
@@ -80,8 +117,13 @@ Cada tópico recebe:
    "01", "02", …, título do tópico em navy e linha amarela horizontal,
    como nos slides 6, 12, 17 etc. da Aula 1 · Bloco 1; ver
    `layout-canonical.md` seção 4).
-2. **6 a 10 slides de desenvolvimento** (fundo `image2.png`), alternando
+2. **5 a 10 slides de desenvolvimento** (fundo `image2.png`), alternando
    layouts da lista abaixo.
+
+A soma de todos os tópicos do núcleo precisa fechar exatamente em **27
+slides (B1 das Aulas 2 a 5, com correção)** ou **32 slides (B1 da Aula
+1 / B2 das Aulas 1 a 4)**. Ajuste o número de slides por tópico para
+fechar a conta.
 
 ### Layouts de slide para o desenvolvimento
 
@@ -132,18 +174,26 @@ Conforme o plano:
 
 ## Slide de Atividade Prática (apenas Bloco 2 das Aulas 1 a 4)
 
-Toda Atividade Prática tem **exatamente 3 questões**. Esse número é fixo
+A Atividade Prática é entregue em **um único slide** com as 3 questões
+e as instruções de entrega (regra 3 da disciplina). O número 3 é fixo
 porque a correção no Bloco 1 da aula seguinte tem **1 slide por questão**
 (ver seção abaixo).
 
 Estrutura do slide de atividade no Bloco 2:
 
-- Título: "Atividade Prática N — entrega até a Aula N+1".
-- Enunciado das **3 questões**, numeradas (Q1, Q2, Q3), com no máximo 2
-  linhas cada. As 3 questões devem versar sobre XY&A e/ou o conteúdo da aula.
-- Lembrete do peso (média aritmética das 4 atividades = 3,0 pontos).
-- Speaker notes com instrução de entrega, critério de correção por questão
-  e referência à aula seguinte, onde a correção será feita.
+- Título: "Atividade Prática N" (sem travessão).
+- Subtítulo amarelo: "Entrega até a Aula N+1".
+- Card navy alto com resumo do desafio em uma linha (Arial Black `sz=1700` amarelo).
+- Caixa "Você deverá produzir" (Arial Black `sz=1400` navy).
+- Enunciado das **3 questões**, numeradas (Pergunta 1./2./3.), com no
+  máximo 2 linhas cada. As 3 questões devem versar sobre XY&A e/ou o
+  conteúdo da aula.
+- Speaker notes com: lembrete do peso (média aritmética das 4
+  atividades = 3,0 pontos da nota final), instrução de entrega,
+  critério de correção por questão e referência à aula seguinte.
+
+Geometria completa em `layout-canonical.md` §12, copiada diretamente
+do gold standard `aula1_bloco2/slide38.xml`.
 
 > **Numeração estável das questões.** O número da questão (Q1, Q2, Q3) é
 > usado também nos 3 slides de correção do Bloco 1 da aula seguinte.
@@ -153,18 +203,21 @@ Estrutura do slide de atividade no Bloco 2:
 
 São o **primeiro tópico** do Bloco 1, antes do conteúdo novo da aula.
 A correção das **3 questões** da Atividade Prática anterior é feita em
-**3 slides distintos**, um para cada questão. Não condense duas questões
-no mesmo slide.
+**3 slides distintos**, um para cada questão (regra 3). Não condense
+duas questões no mesmo slide.
 
-Estrutura obrigatória (5 a 6 slides no total):
+Estrutura obrigatória (**5 slides no total**):
 
 1. **1 slide de transição** (fundo `image1.png`, título "Atividade N: o que aprendemos").
 2. **1 slide de recap** do que foi pedido (XY&A, lembrete das 3 questões na ordem original e peso). Fundo `image2.png`.
-3. **3 slides de correção, 1 por questão** (fundo `image2.png`), na mesma ordem em que apareceram no Bloco 2 anterior:
+3. **3 slides de correção, exatamente 1 por questão** (fundo `image2.png`), na mesma ordem em que apareceram no Bloco 2 anterior:
    - Slide para Q1: enunciado da Q1 + caminho de resposta + boas práticas e armadilhas observadas.
    - Slide para Q2: idem para Q2.
    - Slide para Q3: idem para Q3.
-4. **1 slide de insight ou ponte** que conecta o que foi corrigido ao conteúdo novo do Bloco 1.
+
+A ponte/insight para o conteúdo novo do bloco fica embutida na primeira
+transição de tópico do núcleo (não consome slide adicional, para
+fechar a conta dos 40 slides).
 
 Cada slide de correção de questão segue o template:
 

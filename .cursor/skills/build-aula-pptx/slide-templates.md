@@ -213,12 +213,11 @@ Slide-fonte: `aula1_blocoY/slide1.xml`. Fundo: `image1.png`.
 Slide-fonte: `aula1_bloco1/slide6.xml`. Fundo: `image1.png`.
 
 ```xml
-<!-- Número grande amarelo. cx=2400000 (não 1800000) para evitar quebra
-     horizontal de "01" a 96pt em renderizadores com Arial Black real. -->
+<!-- Número grande amarelo. cx=1800000 (gold standard Aula 1 B1 slide 6). -->
 <p:sp>
   <p:nvSpPr><p:cNvPr id="300" name="TransicaoNumero"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
   <p:spPr>
-    <a:xfrm><a:off x="1097275" y="900000"/><a:ext cx="2400000" cy="1100000"/></a:xfrm>
+    <a:xfrm><a:off x="1097275" y="900000"/><a:ext cx="1800000" cy="1100000"/></a:xfrm>
     <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
   </p:spPr>
   <p:txBody>
@@ -302,11 +301,12 @@ Slide-fonte: `aula1_bloco1/slide3.xml`. Use o cabeçalho padrão (seção 1)
 `layout-canonical.md` seção 5).
 
 ```xml
-<!-- Elipse navy com número amarelo -->
+<!-- Elipse navy com número BRANCO (medidas gold standard B1: ext=473100×420000).
+     Regra 10: fundo navy = texto branco. NÃO usar amarelo. -->
 <p:sp>
   <p:nvSpPr><p:cNvPr id="400" name="AgendaElipse1"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
   <p:spPr>
-    <a:xfrm><a:off x="781363" y="1700000"/><a:ext cx="420000" cy="420000"/></a:xfrm>
+    <a:xfrm><a:off x="785321" y="1700000"/><a:ext cx="473100" cy="420000"/></a:xfrm>
     <a:prstGeom prst="ellipse"><a:avLst/></a:prstGeom>
     <a:solidFill><a:srgbClr val="1B2A4A"/></a:solidFill>
     <a:ln><a:noFill/></a:ln>
@@ -317,7 +317,7 @@ Slide-fonte: `aula1_bloco1/slide3.xml`. Use o cabeçalho padrão (seção 1)
     <a:p><a:pPr algn="ctr"/>
       <a:r>
         <a:rPr lang="pt-BR" sz="1600" b="1">
-          <a:solidFill><a:srgbClr val="E8A317"/></a:solidFill>
+          <a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill>
           <a:latin typeface="Arial Black"/>
         </a:rPr>
         <a:t>1</a:t>
@@ -330,7 +330,7 @@ Slide-fonte: `aula1_bloco1/slide3.xml`. Use o cabeçalho padrão (seção 1)
 <p:sp>
   <p:nvSpPr><p:cNvPr id="401" name="AgendaTitulo1"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
   <p:spPr>
-    <a:xfrm><a:off x="1301363" y="1760000"/><a:ext cx="2400000" cy="399900"/></a:xfrm>
+    <a:xfrm><a:off x="1370945" y="1760000"/><a:ext cx="2703000" cy="399900"/></a:xfrm>
     <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
   </p:spPr>
   <p:txBody>
@@ -349,16 +349,20 @@ Slide-fonte: `aula1_bloco1/slide3.xml`. Use o cabeçalho padrão (seção 1)
 </p:sp>
 ```
 
-Demais posições (`x` da elipse / `x` do título / `y`):
+Demais posições (gold standard B1, `x` da elipse / `x` do título / `y`):
 
-| Coluna E | Coluna D | y elipse | y título |
+| Coluna E elipse | Coluna D elipse | y elipse | y título |
 |---|---|---|---|
-| `781363` | `4204761` | `1700000` | `1760000` |
-| `781363` | `4204761` | `2300000` | `2360000` |
-| `781363` | `4204761` | `2900000` | `2960000` |
-| `781363` | `4204761` | `3500000` | `3560000` |
+| `785321` | `4640749` | `1700000` | `1760000` |
+| `785321` | `4640749` | `2300000` | `2360000` |
+| `785321` | `4640749` | `2900000` | `2960000` |
+| `785321` | `4640749` | `3500000` | `3560000` |
 
-`x título`: `1301363` (E) / `4724761` (D).
+`x título`: `1370945` (E) / `5226372` (D).
+
+Para B2 use a variante: elipse `505200×420000`, x esquerda `750000`,
+x direita `4358824`; título x esquerda `1375529`, x direita `4984353`;
+y começa em `1750000` (passo `600000`).
 
 ---
 
@@ -461,7 +465,7 @@ introdutório navy + 3 cards.
 <p:sp>
   <p:nvSpPr><p:cNvPr id="601" name="CardEsq"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
   <p:spPr>
-    <a:xfrm><a:off x="750000" y="2150000"/><a:ext cx="2163600" cy="2000100"/></a:xfrm>
+    <a:xfrm><a:off x="750000" y="2150000"/><a:ext cx="2255100" cy="2000100"/></a:xfrm>
     <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
     <a:solidFill><a:srgbClr val="FCE5CD"/></a:solidFill>
     <a:ln><a:noFill/></a:ln>
@@ -535,8 +539,10 @@ introdutório navy + 3 cards.
 
 Para os outros dois cards, repita as 4 formas alterando apenas o `off x`:
 
-- Card centro: `off x` do retângulo = `3084250`; `off x` do conteúdo interno = `3255048`.
-- Card direita: `off x` do retângulo = `5418499`; `off x` do conteúdo interno = `5589298`.
+- Card centro: `off x` do retângulo = `3183033`; `off x` do conteúdo interno = `3361059`.
+- Card direita: `off x` do retângulo = `5616064`; `off x` do conteúdo interno = `5794091`.
+
+Gap horizontal entre cards: `~178000` EMU.
 
 ---
 
@@ -545,12 +551,12 @@ Para os outros dois cards, repita as 4 formas alterando apenas o `off x`:
 Slide-fonte: `aula1_bloco1/slide46.xml`. Cabeçalho padrão + repetir item.
 
 ```xml
-<!-- Selo amarelo com número branco -->
+<!-- Selo amarelo (ELIPSE, não rect) com número branco -->
 <p:sp>
   <p:nvSpPr><p:cNvPr id="700" name="SinteseSelo1"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
   <p:spPr>
-    <a:xfrm><a:off x="750000" y="1750000"/><a:ext cx="500000" cy="500000"/></a:xfrm>
-    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+    <a:xfrm><a:off x="750000" y="1750000"/><a:ext cx="600900" cy="500100"/></a:xfrm>
+    <a:prstGeom prst="ellipse"><a:avLst/></a:prstGeom>
     <a:solidFill><a:srgbClr val="E8A317"/></a:solidFill>
     <a:ln><a:noFill/></a:ln>
   </p:spPr>
@@ -573,7 +579,7 @@ Slide-fonte: `aula1_bloco1/slide46.xml`. Cabeçalho padrão + repetir item.
 <p:sp>
   <p:nvSpPr><p:cNvPr id="701" name="SinteseTexto1"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
   <p:spPr>
-    <a:xfrm><a:off x="1350000" y="1810000"/><a:ext cx="5300000" cy="450000"/></a:xfrm>
+    <a:xfrm><a:off x="1471034" y="1810000"/><a:ext cx="6369000" cy="450000"/></a:xfrm>
     <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
   </p:spPr>
   <p:txBody>
@@ -1199,6 +1205,302 @@ prefixe `•` literal.
 Para tabelas curtas, prefira 3 caixas alinhadas como cabeçalho navy +
 linhas em retângulos cinza alternados (zebrado). Para tabelas com muitas
 linhas, use o elemento nativo `<a:graphicFrame><a:tbl>...</a:tbl></a:graphicFrame>`.
+
+---
+
+## 17a. Card branco com borda navy + selo numerado (regra 10)
+
+Slide-fonte: `aula1_bloco1/slide16.xml`. Padrão obrigatório quando o
+card tiver fundo branco. Selo amarelo numerado é opcional.
+
+```xml
+<!-- Card branco com borda navy -->
+<p:sp>
+  <p:nvSpPr><p:cNvPr id="1600" name="CardBranco1"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr>
+    <a:xfrm><a:off x="750000" y="1750000"/><a:ext cx="3435300" cy="1179900"/></a:xfrm>
+    <a:prstGeom prst="roundRect"><a:avLst><a:gd name="adj" fmla="val 6500"/></a:avLst></a:prstGeom>
+    <a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill>
+    <a:ln cap="flat" cmpd="sng" w="12700">
+      <a:solidFill><a:srgbClr val="1B2A4A"/></a:solidFill>
+      <a:prstDash val="solid"/>
+      <a:round/>
+    </a:ln>
+  </p:spPr>
+  <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="pt-BR"/></a:p></p:txBody>
+</p:sp>
+
+<!-- Selo amarelo elíptico com número branco -->
+<p:sp>
+  <p:nvSpPr><p:cNvPr id="1601" name="CardBrancoSelo1"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr>
+    <a:xfrm><a:off x="894645" y="1850000"/><a:ext cx="602700" cy="500100"/></a:xfrm>
+    <a:prstGeom prst="ellipse"><a:avLst/></a:prstGeom>
+    <a:solidFill><a:srgbClr val="E8A317"/></a:solidFill>
+    <a:ln><a:noFill/></a:ln>
+  </p:spPr>
+  <p:txBody>
+    <a:bodyPr anchor="ctr"/>
+    <a:lstStyle/>
+    <a:p><a:pPr algn="ctr"/>
+      <a:r>
+        <a:rPr lang="pt-BR" sz="2000" b="1">
+          <a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill>
+          <a:latin typeface="Arial Black"/>
+        </a:rPr>
+        <a:t>1</a:t>
+      </a:r>
+    </a:p>
+  </p:txBody>
+</p:sp>
+
+<!-- Título do card (Arial Black navy) -->
+<p:sp>
+  <p:nvSpPr><p:cNvPr id="1602" name="CardBrancoTit1"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr>
+    <a:xfrm><a:off x="1617872" y="1870000"/><a:ext cx="2410800" cy="350100"/></a:xfrm>
+    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+  </p:spPr>
+  <p:txBody>
+    <a:bodyPr wrap="square" anchor="t"/>
+    <a:lstStyle/>
+    <a:p><a:pPr algn="l"/>
+      <a:r>
+        <a:rPr lang="pt-BR" sz="1500" b="1">
+          <a:solidFill><a:srgbClr val="1B2A4A"/></a:solidFill>
+          <a:latin typeface="Arial Black"/>
+        </a:rPr>
+        <a:t>Título do card</a:t>
+      </a:r>
+    </a:p>
+  </p:txBody>
+</p:sp>
+
+<!-- Descrição do card (Arial cinza) -->
+<p:sp>
+  <p:nvSpPr><p:cNvPr id="1603" name="CardBrancoDesc1"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr>
+    <a:xfrm><a:off x="930807" y="2400000"/><a:ext cx="3073800" cy="450000"/></a:xfrm>
+    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+  </p:spPr>
+  <p:txBody>
+    <a:bodyPr wrap="square" anchor="t"/>
+    <a:lstStyle/>
+    <a:p><a:pPr algn="l"/>
+      <a:r>
+        <a:rPr lang="pt-BR" sz="1200">
+          <a:solidFill><a:srgbClr val="333333"/></a:solidFill>
+          <a:latin typeface="Arial"/>
+        </a:rPr>
+        <a:t>Descrição do card em até 2 linhas.</a:t>
+      </a:r>
+    </a:p>
+  </p:txBody>
+</p:sp>
+```
+
+Para a grade 2×2 do slide 16, use `x=750000` e `x=4366134`,
+`y=1750000` e `y=3070000`.
+
+---
+
+## 17a-bis. Card branco com barra navy de título (single column)
+
+Padrão de "card premium" para single column (mini-caso, exemplo
+prático, exercício, síntese de etapa). Inspirado no padrão do gold
+standard slide 43 (que usa headers coloridos em 2 colunas) e adaptado
+para 1 coluna larga. **Substitui** o card cinza claro `#F4F4F4` para
+slides em que se quer mais peso visual.
+
+Estrutura:
+
+1. **Card externo** (`roundRect` `adj≈6500`, fill `#FFFFFF`, borda
+   navy `<a:ln w="12700">`) ocupando toda a largura útil
+   (`x=750000`, `cx=6950000`).
+2. **Barra navy de título no topo** (`roundRect` `adj≈6500`, fill
+   `#1B2A4A`, sem borda) com texto **branco** Arial Black centralizado
+   (regra 10).
+3. **Parágrafos do corpo** dentro do card branco, abaixo da barra.
+
+```xml
+<!-- 1) Card externo branco com borda navy -->
+<p:sp>
+  <p:nvSpPr><p:cNvPr id="1650" name="CardWhite"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr>
+    <a:xfrm><a:off x="750000" y="1500000"/><a:ext cx="6950000" cy="2600000"/></a:xfrm>
+    <a:prstGeom prst="roundRect"><a:avLst><a:gd name="adj" fmla="val 6500"/></a:avLst></a:prstGeom>
+    <a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill>
+    <a:ln cap="flat" cmpd="sng" w="12700">
+      <a:solidFill><a:srgbClr val="1B2A4A"/></a:solidFill>
+      <a:prstDash val="solid"/><a:round/>
+    </a:ln>
+  </p:spPr>
+  <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="pt-BR"/></a:p></p:txBody>
+</p:sp>
+
+<!-- 2) Barra navy de título com texto branco centralizado -->
+<p:sp>
+  <p:nvSpPr><p:cNvPr id="1651" name="CardWhiteHeader"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr>
+    <a:xfrm><a:off x="830000" y="1580000"/><a:ext cx="6790000" cy="600000"/></a:xfrm>
+    <a:prstGeom prst="roundRect"><a:avLst><a:gd name="adj" fmla="val 6500"/></a:avLst></a:prstGeom>
+    <a:solidFill><a:srgbClr val="1B2A4A"/></a:solidFill>
+    <a:ln><a:noFill/></a:ln>
+  </p:spPr>
+  <p:txBody>
+    <a:bodyPr wrap="square" anchor="ctr" lIns="180000" rIns="180000"/>
+    <a:lstStyle/>
+    <a:p><a:pPr algn="l"/>
+      <a:r>
+        <a:rPr lang="pt-BR" sz="1700" b="1">
+          <a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill>
+          <a:latin typeface="Arial Black"/>
+        </a:rPr>
+        <a:t>Título do card (em até 1 linha)</a:t>
+      </a:r>
+    </a:p>
+  </p:txBody>
+</p:sp>
+
+<!-- 3) Corpo do card (parágrafos navy/cinza) -->
+<p:sp>
+  <p:nvSpPr><p:cNvPr id="1652" name="CardWhiteBody"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr>
+    <a:xfrm><a:off x="950000" y="2330000"/><a:ext cx="6550000" cy="1690000"/></a:xfrm>
+    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+  </p:spPr>
+  <p:txBody>
+    <a:bodyPr wrap="square" anchor="t"/>
+    <a:lstStyle/>
+    <a:p><a:pPr algn="l"><a:lnSpc><a:spcPct val="125000"/></a:lnSpc></a:pPr>
+      <a:r>
+        <a:rPr lang="pt-BR" sz="1400">
+          <a:solidFill><a:srgbClr val="333333"/></a:solidFill>
+          <a:latin typeface="Arial"/>
+        </a:rPr>
+        <a:t>Primeiro parágrafo do conteúdo do card.</a:t>
+      </a:r>
+    </a:p>
+    <a:p><a:pPr algn="l"><a:lnSpc><a:spcPct val="125000"/></a:lnSpc><a:spcBef><a:spcPts val="400"/></a:spcBef></a:pPr>
+      <a:r>
+        <a:rPr lang="pt-BR" sz="1400">
+          <a:solidFill><a:srgbClr val="333333"/></a:solidFill>
+          <a:latin typeface="Arial"/>
+        </a:rPr>
+        <a:t>Segundo parágrafo.</a:t>
+      </a:r>
+    </a:p>
+  </p:txBody>
+</p:sp>
+```
+
+Recomendações de uso:
+
+- **Sem subtítulo amarelo**: o título do card vai dentro da barra
+  navy, então o cabeçalho padrão usa só H1 + faixa amarela (sem
+  `subtítulo amarelo` separado).
+- `card_y` começa em `1500000` (logo abaixo da faixa amarela
+  canônica), ganhando ~250000 EMU de altura extra para o card.
+- `card_h` típico: `2600000` (3-4 parágrafos de texto), `2750000`
+  (mini-casos com 4+ parágrafos longos).
+- Citação `Autor (ano)` em rodapé `y=4350000` (regra 6) — garanta gap
+  ≥ 50000 EMU entre o card e a citação.
+
+---
+
+## 17b. Caixa de definição navy com texto branco (regra 10)
+
+Use sempre que houver definição, conceito-chave ou texto em destaque.
+**Nunca** texto amarelo sobre navy — sempre branco.
+
+```xml
+<p:sp>
+  <p:nvSpPr><p:cNvPr id="1700" name="DefNavy"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr>
+    <a:xfrm><a:off x="750000" y="2200000"/><a:ext cx="6850000" cy="900000"/></a:xfrm>
+    <a:prstGeom prst="roundRect"><a:avLst><a:gd name="adj" fmla="val 6500"/></a:avLst></a:prstGeom>
+    <a:solidFill><a:srgbClr val="1B2A4A"/></a:solidFill>
+    <a:ln><a:noFill/></a:ln>
+  </p:spPr>
+  <p:txBody>
+    <a:bodyPr wrap="square" anchor="ctr" lIns="200000" rIns="200000" tIns="180000" bIns="180000"/>
+    <a:lstStyle/>
+    <a:p><a:pPr algn="ctr"/>
+      <a:r>
+        <a:rPr lang="pt-BR" sz="1600" b="1">
+          <a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill>
+          <a:latin typeface="Arial Black"/>
+        </a:rPr>
+        <a:t>Texto da definição em destaque, sempre em branco sobre o navy.</a:t>
+      </a:r>
+    </a:p>
+  </p:txBody>
+</p:sp>
+```
+
+---
+
+## 17c. Tabela "manual" com cabeçalho navy + linhas zebradas
+
+Slide-fonte: `aula1_bloco1/slide38.xml`. Linhas como pares de `rect`,
+sem gap (linhas coladas para parecer tabela).
+
+```xml
+<!-- Cabeçalho da coluna 1 (navy) -->
+<p:sp>
+  <p:nvSpPr><p:cNvPr id="1800" name="TblHdrCol1"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr>
+    <a:xfrm><a:off x="750000" y="1700000"/><a:ext cx="2034600" cy="360000"/></a:xfrm>
+    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+    <a:solidFill><a:srgbClr val="1B2A4A"/></a:solidFill>
+    <a:ln><a:noFill/></a:ln>
+  </p:spPr>
+  <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="pt-BR"/></a:p></p:txBody>
+</p:sp>
+<!-- Texto do cabeçalho (branco sobre navy) -->
+<p:sp>
+  <p:nvSpPr><p:cNvPr id="1801" name="TblHdrCol1Txt"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr>
+    <a:xfrm><a:off x="845748" y="1760000"/><a:ext cx="1843200" cy="260100"/></a:xfrm>
+    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+  </p:spPr>
+  <p:txBody>
+    <a:bodyPr wrap="square" anchor="ctr"/>
+    <a:p><a:pPr algn="l"/>
+      <a:r>
+        <a:rPr lang="pt-BR" sz="1100" b="1">
+          <a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill>
+          <a:latin typeface="Arial Black"/>
+        </a:rPr>
+        <a:t>Cabeçalho</a:t>
+      </a:r>
+    </a:p>
+  </p:txBody>
+</p:sp>
+
+<!-- Linha 1 da coluna 1 (fundo branco) -->
+<p:sp>
+  <p:nvSpPr><p:cNvPr id="1802" name="TblRow1Col1"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr>
+    <a:xfrm><a:off x="750000" y="2060000"/><a:ext cx="2034600" cy="360000"/></a:xfrm>
+    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+    <a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill>
+    <a:ln><a:noFill/></a:ln>
+  </p:spPr>
+  <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="pt-BR"/></a:p></p:txBody>
+</p:sp>
+<!-- Linha 2 (fundo F4F4F4 - zebrado) -->
+<!-- ... mesma estrutura, fill F4F4F4 a y=2420000 ... -->
+```
+
+Coordenadas das 4 colunas (Aula 1 B1 slide 38):
+`x=750000` (col 1, cx=2034600), `x=2784636` (col 2, cx=1675500),
+`x=4460218` (col 3, cx=1675500), `x=6135800` (col 4, cx=1735500).
+Altura por linha: `360000`. Texto interno cx ligeiramente menor com
+inset `~95748` x.
+
+Para destacar valor semanticamente positivo/negativo na última coluna:
+fill verde `#2D7D4F`, navy `#1B2A4A`, ou amarelo `#E8A317`.
 
 ---
 

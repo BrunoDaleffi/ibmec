@@ -94,18 +94,76 @@ pontual. **Nunca** preencher mais de ~15% do slide com amarelo sólido.
 
 ## Motivos visuais permitidos (carry-over do layout)
 
-- **Faixa horizontal amarela `#E8A317`** (~**54900** a **55000** EMU de altura,
-  largura inicial ~**1 500 000** EMU, `x ≈ 750005`): aparece **sob o H1** em
-  quase todos os slides de **conteúdo** da Aula 1 (Agenda, Objetivos,
-  conceitos, Atividade Prática, etc.). **É obrigatória** no cabeçalho padrão
-  de conteúdo. Também aparece nas **capas** e **transições de tópico** (com
-  geometria própria; ver `layout-canonical.md`).
+- **Faixa horizontal amarela `#E8A317` (regra 11 — inegociável)**:
+  altura **fixa** `54900` EMU, posição **fixa** `y=905100`,
+  `x≈750005`/`750006`. A largura `cx` **varia** conforme a largura do
+  H1 (intervalo observado no gold standard: `1500000` a `1808100` EMU).
+  Aparece **sob o H1** em **todos** os slides de **conteúdo** e
+  estruturais (Agenda, Objetivos, Conexão, Síntese, Ponte,
+  Referências, Atividade Prática, slides de correção, conceitos,
+  etc.). Também aparece nas **capas** e **transições de tópico** (com
+  geometria própria; ver `layout-canonical.md` §§3 e 4). Só pode ser
+  omitida em diagramas full-bleed sem H1 (raríssimos).
 - Números grandes em amarelo com rótulo pequeno em cinza abaixo
   (stat callouts).
 - Ícones simples (formas geométricas, não emojis) em círculos navy ou
   amarelos.
 - Cards com borda fina navy ou fundo `#F4F4F4`.
+- **Cards brancos com borda navy (regra 10):** `roundRect` fill
+  `#FFFFFF` + `<a:ln w="12700">` solid `#1B2A4A`. Padrão obrigatório
+  para qualquer card com fundo branco. Slide-fonte canônico:
+  `aula1_bloco1/slide16.xml` (4 cards 2×2 com selo numerado amarelo).
+- **Caixas de definição navy com texto branco (regra 10):** `rect` ou
+  `roundRect` fundo `#1B2A4A` + texto `#FFFFFF` Arial Black centralizado.
+  Use sempre que houver definição, conceito-chave ou texto em destaque.
 - Setas, timelines e fluxos em navy com nós amarelos.
+
+### Combinações de cor proibidas (regra 10)
+
+| Combinação | Permitida? | Alternativa |
+|---|---|---|
+| Texto amarelo `#E8A317` sobre fundo navy `#1B2A4A` | ❌ NÃO | Usar texto branco `#FFFFFF` |
+| Texto navy `#1B2A4A` sobre fundo amarelo `#E8A317` | ❌ NÃO | Usar texto branco `#FFFFFF` |
+| Texto branco sobre fundo branco | ❌ NÃO (invisível) | Mudar fundo |
+| Texto cinza claro sobre fundo cinza | ❌ NÃO (contraste ruim) | Usar `#333333` ou `#1B2A4A` |
+| Texto navy sobre fundo branco | ✅ Sim | — |
+| Texto amarelo sobre fundo branco | ✅ Sim (subtítulos curtos) | Negrito recomendado |
+| Texto branco sobre fundo navy | ✅ Sim | — |
+| Texto branco sobre fundo amarelo | ✅ Sim (com bold/Arial Black) | — |
+
+#### Aplicações canônicas dessas regras (gold standard Aula 1)
+
+| Local | Forma | Cor de fundo | Cor do texto |
+|---|---|---|---|
+| Selo numerado da agenda (slide 3) | `ellipse` | navy `#1B2A4A` | **branco `#FFFFFF`** (não amarelo!) |
+| Selo numerado da síntese (slide 46) | `ellipse` | amarelo `#E8A317` | **branco `#FFFFFF`** |
+| Selo numerado em cards 2×2 (slides 16, 36) | `ellipse` | amarelo `#E8A317` | **branco `#FFFFFF`** |
+| Cabeçalho de coluna em comparação navy | `rect` | navy `#1B2A4A` | **branco `#FFFFFF`** |
+| Cabeçalho de coluna em comparação amarela | `rect` | amarelo `#E8A317` | **branco `#FFFFFF`** (não navy!) |
+| Tag em caps "HOJE" / "AULAS X-Y" sobre card pastel | `rect` ou texto livre | pastel `#FCE5CD` | amarelo `#E8A317` (sobre pastel funciona) |
+
+> **Erro comum corrigido em 2026-05-04:** o número dentro da elipse navy
+> da agenda estava em **amarelo** em decks gerados por scripts. O gold
+> standard usa **branco** (`schemeClr lt1` no XML). Sempre use branco.
+
+**Hierarquia canônica de cores (regra 10):** títulos sempre em **navy
+ibmec `#1B2A4A`**; subtítulos amarelos sempre em **amarelo ibmec
+`#E8A317`** sobre fundo branco.
+
+### Bullets estilizados (regra 10)
+
+Sempre que listar itens, use **círculos amarelos `#E8A317` ou navy
+`#1B2A4A`** como marcadores visuais (em vez de bullet padrão `•`).
+Tamanhos canônicos do gold standard:
+
+| Local | Forma | Cor | Dimensões |
+|---|---|---|---|
+| Objetivos | `ellipse` | `#E8A317` | `160000×160000` |
+| Ponte | `ellipse` | `#E8A317` | `217800×180000` |
+| Agenda B1 (selo numerado) | `ellipse` | `#1B2A4A` | `473100×420000` |
+| Agenda B2 (selo numerado) | `ellipse` | `#1B2A4A` | `505200×420000` |
+| Síntese (selo numerado) | `ellipse` | `#E8A317` | `600900×500100` |
+| Cards 2×2 (slide 16/36) | `ellipse` | `#E8A317` | `553500×459900` a `602700×500100` |
 
 ### Design "estiloso" da Aula 1 — replicável em conteúdo
 
@@ -126,12 +184,18 @@ Catálogo com slide-fonte de cada padrão e princípios de uso:
 - Barras coloridas de cabeçalho/rodapé sobrepostas ao fundo.
 - Retângulos coloridos full-width decorativos.
 - Fundo bege/creme.
-- Omitir a **faixa amarela canônica** sob o H1 em slides de conteúdo que
-  seguem o cabeçalho padrão da Aula 1 (exceto diagramas full-bleed sem título).
+- Omitir a **faixa amarela canônica** sob o H1 em slides de conteúdo
+  que seguem o cabeçalho padrão da Aula 1 (regra 11; exceto diagramas
+  full-bleed sem título).
 - Bullets `•` literais — use `<a:buChar char="•"/>` ou `<a:buAutoNum>`.
 - Texto navy pequeno sobre a faixa amarela (a faixa NÃO é lugar para texto).
+- **Texto amarelo sobre fundo navy** (use branco — regra 10).
+- **Texto navy sobre fundo amarelo** (use branco — regra 10).
+- Cards com fundo branco **sem borda navy** (regra 10).
 - Slides só de texto: todo slide deve ter **algum elemento visual**
-  (ícone, forma, número grande, card, chart, diagrama).
+  (ícone, forma, número grande, card, chart, diagrama, tabela, imagem).
+- Sobreposição de elementos ou texto cortado (regra 12). Espaço mínimo
+  entre formas adjacentes: `60000` EMU.
 
 ## Conversão rápida de unidades
 

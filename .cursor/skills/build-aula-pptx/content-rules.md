@@ -8,7 +8,7 @@ Bloco**, **Objetivos de Aprendizagem**, **Atividade Prática N**,
 **Referências do bloco**. A lista completa e o layout associado estão em
 [`layout-canonical.md`](layout-canonical.md).
 
-## Fidelidade ao plano
+## Fidelidade ao plano (regra 9)
 
 Todos os itens listados no bloco dentro de `docs/plano_curso.docx`
 (seção "Cronograma Detalhado das Aulas") devem aparecer, **na ordem
@@ -18,6 +18,37 @@ adicionais, mas:
 - não pode **omitir** tópicos;
 - não pode **reordenar** a sequência pedagógica;
 - não pode trocar conceitos do plano por sinônimos sem checar com o usuário.
+
+## Mini-casos práticos antes da formalização (regra 9)
+
+Toda vez que um método novo for introduzido, **apresente antes um
+mini-caso prático** que torne a intuição concreta. A formalização
+estatística/matemática vem **depois** do mini-caso, não antes. Esta
+ordem é regra da disciplina (público de advogados sem formação
+matemática) e está em todas as aulas do gold standard.
+
+### Exemplos canônicos do professor (replicar fielmente quando aplicável)
+
+| Conteúdo do plano | Mini-caso de abertura | Pivô para a teoria |
+|---|---|---|
+| **Testes de hipóteses (Aula 4)** | Lançar uma moeda 10 vezes (5 caras × 5 coroas: a moeda é honesta?) versus lançar 10.000 vezes (5.123 caras × 4.877 coroas: e agora?). | Mostra intuitivamente que **tamanho da amostra** muda a confiança da decisão. Daí define `H0`, `H1`, `p-value`, "ônus da prova estatístico". |
+| **Modelos estatísticos de desfecho, tempo e valor (Aula 4)** | Caso "real" do escritório que reduziu **R$ 12 mi de provisão** após substituir intuição por modelo combinado de probabilidade de êxito × tempo médio de tramitação × valor esperado da condenação. | Mostra o **impacto financeiro** de provisionamento estratégico apoiado em modelos. Daí entra o aparato técnico (regressão logística, sobrevivência, regressão linear). |
+| **Falácia do promotor (armadilhas estatísticas)** | Caso Sally Clark (Reino Unido, 1999): morte súbita de dois bebês, condenação errada por inversão de probabilidades condicionais. | Mostra o custo concreto de errar `P(prova\|inocência)` por `P(inocência\|prova)`. Daí entra Bayes. |
+| **Paradoxo de Simpson** | Admissões de pós-graduação Berkeley 1973: agregado mostra discriminação contra mulheres, mas por departamento o efeito some ou se inverte. | Mostra que **agregação esconde a verdade**. Daí entra estratificação e variável de confusão. |
+| **Distinção população × amostra** | Slide 43 do gold standard (Aula 1 B1): "ônus da prova × ônus da amostragem". O juiz decide sobre fatos que não presenciou; o analista conclui sobre casos que não leu um a um. | Analogia jurídica direta. Daí entra inferência estatística. |
+| **IA generativa no Direito (Aula 5)** | Demonstração ao vivo: pedir resumo de processo a um chatbot e pedir o mesmo a um RAG conectado à base TJSP. Comparar acertos e alucinações. | Mostra **onde** a IA acelera e **onde** o operador humano decide. Daí entra o pipeline (chat / RAG / output estruturado / agentes / dashboards). |
+
+Sempre que possível, traga **um caso concreto com cifras reais** ou
+inspirado em escritórios reais. Quando não houver caso real, use o
+escritório fictício **XY&A** (perfil na seção 7 do plano), já calibrado
+para a disciplina.
+
+### Estrutura recomendada para um mini-caso
+
+1. **Slide 1 do bloco-mini-caso:** descrição do caso em 2 a 4 bullets (situação, conflito, pergunta).
+2. **Slide 2:** dado quantitativo central do caso (stat callout — número grande amarelo + label cinza).
+3. **Slide 3:** resolução intuitiva (sem fórmulas), apenas o raciocínio.
+4. **Slide 4 em diante:** formalização (a teoria que o método representa).
 
 ## Caso XY&A como fio condutor
 
@@ -113,8 +144,10 @@ discretas dos slides anteriores; é a consolidação.
 
 ## Cuidados específicos da disciplina
 
-- Quando usar números/percentuais reais (CNJ, TJSP, ABJ), traga ano e
-  fonte explícitos.
+- **Referências reais sempre que possível (regra 6).** Quando usar
+  números/percentuais reais (CNJ, TJSP, ABJ), traga ano e fonte
+  explícitos no rodapé do slide. Não invente números. Quando for
+  hipotético (caso XY&A), deixe claro que é cenário ilustrativo.
 - Ao apresentar testes de hipóteses ou modelos preditivos, sempre faça
   a **analogia jurídica** antes da definição estatística.
 - Ao mostrar pipeline com IA (Aula 5), explicite onde o operador humano

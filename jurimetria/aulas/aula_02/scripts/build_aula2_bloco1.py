@@ -68,10 +68,12 @@ LIGHT = "F4F4F4"
 PASTEL = "FCE5CD"
 WHITE = "FFFFFF"
 
-# Cabeçalho padrão da Aula 1 (slides estruturais)
+# Cabeçalho padrão da Aula 1 (slides estruturais).
+# Largura `H1_W=6700800` é a medida exata do gold standard B1 slide 3
+# (Agenda do Bloco). Soft limit do `check_useful_area`: x ≤ 7700000.
 H1_X = 750000
 H1_Y = 500000
-H1_W = 5950000
+H1_W = 6700800
 H1_H = 900000
 H1_SZ = 2400
 
@@ -82,13 +84,13 @@ FAIXA_H = 54900
 
 SUB_X = 750000
 SUB_Y = 1330000
-SUB_W = 5950000
+SUB_W = 6700800
 SUB_H = 400000
 SUB_SZ = 1400
 
 CONTENT_X_MIN = 750000
-CONTENT_X_MAX = 6700000
-CONTENT_W = CONTENT_X_MAX - CONTENT_X_MIN  # 5950000
+CONTENT_X_MAX = 7700000  # soft limit (gold standard agenda chega a x≈7929372 com itens à direita)
+CONTENT_W = CONTENT_X_MAX - CONTENT_X_MIN  # 6950000
 CONTENT_Y_MIN = 1700000
 CONTENT_Y_MAX = 4500000
 
@@ -120,6 +122,10 @@ def text_box(
     bullet_color: str = YELLOW,
     line_spc: int = 100000,
     para_spc_before: int = 0,
+    lIns: int = 91440,
+    rIns: int = 91440,
+    tIns: int = 45720,
+    bIns: int = 45720,
 ) -> str:
     bul = ""
     if bullet:
@@ -163,7 +169,7 @@ def text_box(
         f'<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
         f"<a:noFill/></p:spPr>"
         f'<p:txBody><a:bodyPr wrap="square" anchor="{anchor}" '
-        f'lIns="91440" rIns="91440" tIns="45720" bIns="45720"/>'
+        f'lIns="{lIns}" rIns="{rIns}" tIns="{tIns}" bIns="{bIns}"/>'
         f"<a:lstStyle/>"
         f"{paragraph}</p:txBody></p:sp>"
     )
@@ -544,21 +550,15 @@ def build_capa(
 
 
 def build_transicao(n: int, numero: str, titulo: str, subtitulo: str) -> None:
-    """Transição de tópico — fundo image1.png. Geometria da Aula 1 slide 6.
-
-    cx do número grande alargado para 2400000 EMU para evitar quebra
-    horizontal de "01"/"02" em renderizadores que usam Arial Black real
-    (PowerPoint, LibreOffice GUI). O soffice headless usado no QA local
-    falha em detectar essa quebra porque cai num fallback de fonte mais
-    estreito.
-    """
+    """Transição de tópico — fundo image1.png. Geometria do gold standard
+    Aula 1 B1 slide 6 (cx=1800000 para o número, sz=9600)."""
     parts: list[str] = []
     parts.append(
         text_box(
             20,
             HERO_X,
             900000,
-            2400000,
+            1800000,
             1100000,
             [
                 {
@@ -569,8 +569,12 @@ def build_transicao(n: int, numero: str, titulo: str, subtitulo: str) -> None:
                     "font": "Arial Black",
                 }
             ],
-            anchor="t",
+            anchor="ctr",
             align="l",
+            lIns=0,
+            rIns=0,
+            tIns=0,
+            bIns=0,
         )
     )
     parts.append(
@@ -694,12 +698,12 @@ def build_agenda(n: int, items: list[str]) -> None:
     """Agenda do Bloco — grade 2×4 (até 8 itens). Replica Aula 1 B1 slide 3."""
     parts = canonical_header("Agenda do Bloco", "O que vamos percorrer nas próximas 1h50min")
 
-    # grade 2×4: 4 linhas, 2 colunas
+    # grade 2×4: 4 linhas, 2 colunas (medidas gold standard B1 slide 3)
     y_positions = [1700000, 2300000, 2900000, 3500000]
-    el_x_left = 781363
-    el_x_right = 4204761
-    title_x_left = 1301363
-    title_x_right = 4724761
+    el_x_left = 785321
+    el_x_right = 4640749
+    title_x_left = 1370945
+    title_x_right = 5226372
 
     base_id = 50
     for i, item in enumerate(items[:8]):
@@ -716,11 +720,11 @@ def build_agenda(n: int, items: list[str]) -> None:
                 base_id + i * 2,
                 el_x,
                 y,
-                420000,
+                473100,
                 420000,
                 NAVY,
                 text=str(i + 1),
-                text_color=YELLOW,
+                text_color=WHITE,  # regra 10: fundo navy = texto branco (gold standard usa schemeClr lt1)
                 text_size=1600,
                 text_bold=True,
             )
@@ -730,7 +734,7 @@ def build_agenda(n: int, items: list[str]) -> None:
                 base_id + i * 2 + 1,
                 t_x,
                 y + 60000,
-                2400000,
+                2703000,
                 399900,
                 [
                     {
@@ -887,35 +891,28 @@ def build_sintese(n: int, items: list[str]) -> None:
 
     for i, txt in enumerate(items[:5]):
         y = y_positions[i]
-        # Selo amarelo com número branco
+        # Selo amarelo (ELIPSE, gold standard B1 slide 46) com número branco
         parts.append(
-            filled_rect(
+            ellipse(
                 base_id + i * 2,
                 750000,
                 y,
-                500000,
-                500000,
+                600900,
+                500100,
                 YELLOW,
-                text_runs=[
-                    {
-                        "text": str(i + 1),
-                        "sz": 2000,
-                        "b": True,
-                        "color": WHITE,
-                        "font": "Arial Black",
-                    }
-                ],
-                text_align="ctr",
-                text_anchor="ctr",
+                text=str(i + 1),
+                text_color=WHITE,
+                text_size=2000,
+                text_bold=True,
             )
         )
         # Texto descritivo
         parts.append(
             text_box(
                 base_id + i * 2 + 1,
-                1350000,
+                1471034,
                 y + 60000,
-                5300000,
+                6369000,
                 450000,
                 [
                     {
@@ -1154,34 +1151,91 @@ def build_card(
     card_paragraphs: list[str],
     *,
     citation: str | None = None,
-    card_h: int = 2400000,
+    card_h: int = 2600000,
     card_title_size: int = 1700,
     card_text_size: int = 1400,
 ) -> None:
-    """Card cinza claro com borda navy, sob cabeçalho padrão."""
-    parts = canonical_header(title, card_title)
-    card_paras = []
-    for p in card_paragraphs:
-        card_paras.append(
-            [{"text": p, "sz": card_text_size, "color": TEXT, "font": "Arial"}]
-        )
+    """Card branco com borda navy + barra navy de título + texto navy.
+
+    Padrão "estiloso" inspirado no slide 22 do gold standard (cards lado
+    a lado com cabeçalho colorido). Aqui adaptado para card único:
+
+    - Outer card: roundRect FFFFFF com borda navy (regra 10: fundo
+      branco exige borda navy).
+    - Header bar interno: rect navy com título em Arial Black branco
+      (regra 10: fundo navy = texto branco).
+    - Corpo: parágrafos em texto navy/cinza dentro do card branco.
+    """
+    # Sem subtítulo amarelo (o título do card vai dentro do header navy).
+    parts = canonical_header(title)
+
+    card_x = CONTENT_X_MIN
+    card_y = 1500000  # logo abaixo da faixa amarela canônica (y=960000)
+    card_w = CONTENT_W
+    header_h = 600000
+    inner_pad_x = 200000
+    inner_pad_y = 150000
+
+    # 1) Card externo (branco com borda navy)
     parts.append(
         filled_rect(
             50,
-            CONTENT_X_MIN + 50000,
-            1800000,
-            CONTENT_W - 100000,
+            card_x,
+            card_y,
+            card_w,
             card_h,
-            LIGHT,
+            WHITE,
             line=NAVY,
+            line_w=12700,
             rounded=True,
-            multi_paragraphs=card_paras,
+        )
+    )
+    # 2) Header bar navy com título branco
+    parts.append(
+        filled_rect(
+            51,
+            card_x + 80000,
+            card_y + 80000,
+            card_w - 160000,
+            header_h,
+            NAVY,
+            rounded=True,
+            text_runs=[
+                {
+                    "text": card_title,
+                    "sz": card_title_size,
+                    "b": True,
+                    "color": WHITE,
+                    "font": "Arial Black",
+                }
+            ],
             text_align="l",
-            text_anchor="t",
+            text_anchor="ctr",
+        )
+    )
+    # 3) Parágrafos do corpo (dentro do card branco, abaixo do header)
+    body_y = card_y + 80000 + header_h + inner_pad_y
+    body_x = card_x + inner_pad_x
+    body_w = card_w - 2 * inner_pad_x
+    body_h = card_h - 80000 - header_h - inner_pad_y - 80000
+    card_paras = [
+        [{"text": p, "sz": card_text_size, "color": TEXT, "font": "Arial"}]
+        for p in card_paragraphs
+    ]
+    parts.append(
+        multi_para_box(
+            52,
+            body_x,
+            body_y,
+            body_w,
+            body_h,
+            card_paras,
+            line_spc=125000,
+            para_spc_before=400,
         )
     )
     if citation:
-        parts.append(footer_citation(51, citation))
+        parts.append(footer_citation(53, citation))
     save_slide(n, "".join(parts), image=2)
 
 
@@ -1200,7 +1254,7 @@ def build_stat(
             50,
             CONTENT_X_MIN,
             1800000,
-            5800000,
+            CONTENT_W,
             1400000,
             [
                 {
@@ -1252,8 +1306,8 @@ def build_comparacao(
     """Comparação em 2 colunas (header navy + amarelo, body com bullets)."""
     parts = canonical_header(title)
 
-    col_w = 2870000
     gap = 210000
+    col_w = (CONTENT_W - gap) // 2  # divide a área útil em 2 colunas com 1 gap
     left_x = CONTENT_X_MIN
     right_x = CONTENT_X_MIN + col_w + gap
     header_y = 1780000
@@ -1303,7 +1357,7 @@ def build_comparacao(
                     "text": right_label,
                     "sz": 1700,
                     "b": True,
-                    "color": NAVY,
+                    "color": WHITE,
                     "font": "Arial Black",
                 }
             ],
@@ -1393,8 +1447,8 @@ def build_diagrama_6_etapas(
             arrow_y = y_circ + diam // 2 - 25000
             parts.append(filled_rect(base_id + 100 + i, arrow_x, arrow_y, arrow_w, 50000, NAVY))
 
-        label_x = cx - 350000
-        label_w = diam + 700000
+        label_x = max(CONTENT_X_MIN, cx - 200000)
+        label_w = min(diam + 400000, 7970000 - label_x)
         parts.append(
             text_box(
                 base_id + 200 + i,
@@ -1603,7 +1657,7 @@ def build_recap_atividade(
 ) -> None:
     """Recap da Atividade N (slide 2 do bloco de correção)."""
     parts = canonical_header(
-        f"O que foi pedido na Atividade {aula_n - 1}",
+        f"Recap da Atividade {aula_n - 1}",
         f"Atividade Prática {aula_n - 1} (Bloco 2 da Aula {aula_n - 1}) · 3 questões",
     )
 
@@ -1654,7 +1708,7 @@ def build_correcao_questao(
         "Caminho de resposta esperado e armadilhas observadas",
     )
 
-    # Card amarelo com enunciado
+    # Caixa navy com enunciado em branco (regra 10: nunca navy sobre amarelo)
     parts.append(
         filled_rect(
             50,
@@ -1662,14 +1716,15 @@ def build_correcao_questao(
             1780000,
             CONTENT_W,
             720000,
-            YELLOW,
+            NAVY,
+            rounded=True,
             multi_paragraphs=[
                 [
                     {
                         "text": enunciado,
                         "sz": 1400,
                         "b": True,
-                        "color": NAVY,
+                        "color": WHITE,
                         "font": "Arial Black",
                     }
                 ]
@@ -1801,6 +1856,12 @@ def swap_media_para_aula1() -> None:
     tmp.rename(img2)
 
 
+REPO_ROOT = Path(__file__).resolve().parents[4]
+"""Diretório raiz do repositório (onde vivem `.cursor/skills/...`).
+A partir daqui o script monta os paths absolutos para `unpack_pptx.py`
+e para `docs/templates/layout.pptx` (que vive em `jurimetria/docs/`)."""
+
+
 def unpack_layout_fresh() -> None:
     """Garante que /tmp/deck_aula2_bloco1/ é um unpack limpo do
     layout.pptx oficial. Sempre rm -rf antes de unpack para evitar
@@ -1811,11 +1872,12 @@ def unpack_layout_fresh() -> None:
 
     if DECK.exists():
         shutil.rmtree(DECK)
-    layout = Path("docs/templates/layout.pptx").resolve()
+    layout = REPO_ROOT / "jurimetria/docs/templates/layout.pptx"
+    unpack_script = REPO_ROOT / ".cursor/skills/build-aula-pptx/scripts/unpack_pptx.py"
     subprocess.run(
         [
             "uv", "run", "python",
-            ".cursor/skills/build-aula-pptx/scripts/unpack_pptx.py",
+            str(unpack_script),
             "--force",
             str(layout),
             str(DECK),
@@ -1958,7 +2020,7 @@ def main() -> None:
     build_transicao(
         11,
         "02",
-        "O ciclo da ciência de dados",
+        "Ciclo da ciência de dados",
         "Visão geral das 6 etapas que estruturam o resto do curso",
     )
 
@@ -1992,8 +2054,8 @@ def main() -> None:
     # 14. Etapas 1 e 2
     build_card(
         14,
-        "Etapas 1 e 2: pergunta e mapeamento",
-        "Onde tudo começa",
+        "Etapas 1 e 2 do ciclo",
+        "Pergunta e mapeamento: onde tudo começa",
         [
             "Etapa 1, transformar a pergunta jurídica em pergunta investigável: foco do bloco de hoje.",
             "Etapa 2, mapear as informações necessárias: identificar quais variáveis e fontes responderiam à pergunta.",
@@ -2005,8 +2067,8 @@ def main() -> None:
     # 15. Etapas 3 e 4
     build_card(
         15,
-        "Etapas 3 e 4: coletar e tratar",
-        "Construindo a base analítica",
+        "Etapas 3 e 4 do ciclo",
+        "Coletar e tratar: construindo a base analítica",
         [
             "Etapa 3, coletar: fontes públicas (DataJud, tribunais), internas (sistemas) e, quando preciso, scraping.",
             "Etapa 4, tratar: padronizar datas, valores, classificações e textos em uma TABELA estruturada e saneada.",
@@ -2018,8 +2080,8 @@ def main() -> None:
     # 16. Etapas 5 e 6
     build_card(
         16,
-        "Etapas 5 e 6: analisar e apresentar",
-        "Da TABELA ao insight",
+        "Etapas 5 e 6 do ciclo",
+        "Analisar e apresentar: da TABELA ao insight",
         [
             "Etapa 5, analisar: estatística descritiva no Excel. Medidas de posição, dispersão e gráficos.",
             "Etapa 6, apresentar: gráficos e tabelas com boas práticas de visualização para o público jurídico.",
@@ -2073,7 +2135,7 @@ def main() -> None:
     # 20. O que é uma pergunta investigável
     build_conceito(
         20,
-        "O que é uma pergunta investigável",
+        "Pergunta investigável",
         [
             "É uma pergunta que aponta com clareza para um dado mensurável e para um critério de resposta.",
             "Em vez de pedir uma opinião, pede uma comparação, uma proporção, uma frequência ou uma evolução.",
@@ -2196,7 +2258,7 @@ def main() -> None:
     # 29. Tipos de variável (revisita Aula 1)
     build_comparacao(
         29,
-        "Tipos de variável (revisita da Aula 1)",
+        "Tipos de variável",
         "Categóricas",
         [
             "Tipo de ação: revisão ou renovatória.",
@@ -2217,7 +2279,7 @@ def main() -> None:
     # 30. Tabela — variáveis na base TJSP
     build_tabela(
         30,
-        "Variáveis disponíveis na base TJSP",
+        "Variáveis na base TJSP",
         ["Variável", "Tipo", "O que ela permite responder"],
         [
             ["Tipo de ação", "Categórica", "Comparar revisão x renovatória"],
@@ -2285,7 +2347,7 @@ def main() -> None:
     # 35. Tabela analítica como petição inicial
     build_conceito(
         35,
-        "Tabela analítica como petição inicial",
+        "A tabela é a petição inicial",
         [
             "A petição inicial define o que está em juízo. Tudo o que não estiver nela, em regra, não pode ser decidido.",
             "A tabela analítica define o que pode ser respondido. Tudo o que não estiver nela, em regra, não pode ser analisado.",
@@ -2295,9 +2357,25 @@ def main() -> None:
         accent="Analogia jurídica",
     )
 
-    # 36. Síntese do Bloco 1
-    build_sintese(
+    # 36. Mini-caso completo XY&A (regra 9: mini-caso prático antes da síntese)
+    build_card(
         36,
+        "Mini-caso completo · XY&A",
+        "Da intuição à tabela em 4 movimentos",
+        [
+            "Movimento 1 (Etapa 1): intuição vira pergunta. 'Estamos perdendo mais renovatórias' vira 'Nas renovatórias do TJSP, parte PJ, 2018 a 2024, qual a evolução anual da taxa de procedência em favor do locador?'.",
+            "Movimento 2 (Etapa 2): pergunta vira variáveis. Tipo de ação, ano da sentença, parte (PJ/PF), desfecho, jurisdição.",
+            "Movimento 3 (Etapa 2): variáveis viram tabela. 1 linha por processo, 5 colunas, ano da sentença como recorte temporal e desfecho como variável central.",
+            "Movimento 4 (próximo bloco): tabela viabiliza coleta planejada na DataJud e na base interna do XY&A.",
+        ],
+        citation="Nunes (2019); CNJ (2024)",
+        card_h=2750000,
+        card_text_size=1050,
+    )
+
+    # 37. Síntese do Bloco 1
+    build_sintese(
+        37,
         [
             "Toda análise jurimétrica começa por uma pergunta investigável e termina em uma decisão concreta.",
             "O ciclo de 6 etapas é o método reproduzível, rastreável e defensável que sustenta cada análise.",
@@ -2307,9 +2385,9 @@ def main() -> None:
         ],
     )
 
-    # 37. Ponte para o Bloco 2
+    # 38. Ponte para o Bloco 2
     build_ponte(
-        37,
+        38,
         "Da Etapa 2 à coleta",
         "No próximo bloco entramos na Etapa 3: como obter os dados em fontes públicas e internas.",
         [
@@ -2320,9 +2398,9 @@ def main() -> None:
         ],
     )
 
-    # 38. Referências do Bloco
+    # 39. Referências do Bloco
     build_referencias(
-        38,
+        39,
         [
             "NUNES, Marcelo Guedes. Jurimetria: como a estatística pode reinventar o Direito. 2. ed. São Paulo: Revista dos Tribunais, 2019.",
             "WHEELAN, Charles. Estatística: o que é, para que serve, como funciona. Rio de Janeiro: Zahar, 2016.",
@@ -2336,16 +2414,16 @@ def main() -> None:
         ],
     )
 
-    # 39. Fim do Bloco 1
+    # 40. Fim do Bloco 1
     build_encerramento_b1(
-        39,
+        40,
         bloco_n=1,
         proximo_bloco_gancho="Etapa 3 (coletar), LGPD, vieses e a Atividade Prática 2.",
     )
 
-    update_content_types(39)
-    update_presentation(39)
-    print("OK 39 slides gerados.")
+    update_content_types(40)
+    update_presentation(40)
+    print("OK 40 slides gerados.")
 
 
 if __name__ == "__main__":

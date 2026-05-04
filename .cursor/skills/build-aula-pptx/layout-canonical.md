@@ -1,8 +1,9 @@
 # Layouts canônicos (referência obrigatória)
 
-A **Aula 1** (Bloco 1 e Bloco 2) é a **fonte de verdade visual** da disciplina.
-Todo deck de qualquer aula deve **replicar literalmente** geometria (EMU),
-tipografia (`sz`/fonte), cores (`srgbClr`) e ordem das formas dos slides
+A **Aula 1** (Bloco 1 e Bloco 2) é a **fonte de verdade visual** da
+disciplina (padrão ouro, edição mais recente). Todo deck de qualquer
+aula deve **replicar literalmente** geometria (EMU), tipografia
+(`sz`/fonte), cores (`srgbClr`) e ordem das formas dos slides
 equivalentes da Aula 1.
 
 Arquivos de referência:
@@ -10,9 +11,10 @@ Arquivos de referência:
 - `aulas/aula_01/slides/aula1_bloco1_jurimetria.pptx`
 - `aulas/aula_01/slides/aula1_bloco2_jurimetria.pptx`
 
-**Antes de autorar slides novos:** desempacote o `.pptx` correspondente da
-Aula 1 e copie do XML do slide-fonte indicado na tabela de cada seção. Não
-re-derive medidas; copie.
+**Antes de autorar slides novos:** desempacote o `.pptx` correspondente
+da Aula 1 e copie do XML do slide-fonte indicado na tabela de cada
+seção. Não re-derive medidas; copie. Todas as medidas das seções
+abaixo foram extraídas diretamente do XML do gold standard.
 
 ---
 
@@ -51,6 +53,16 @@ houver H1 textual.
 |---|---|---|---|---|---|---|
 | **Hard limit (não passar)** | `400000` | `400000` | `7970000` | `4685000` | 7570000 | 4285000 |
 | **Soft limit (recomendado)** | `750000` | `500000` | `7700000` | `4650000` | 6950000 | 4150000 |
+
+> **Importante (correção 2026-05-04):** todo conteúdo de slide
+> estrutural (H1, subtítulo amarelo, cards, caixas navy de definição,
+> tabelas, listas) deve **preencher a largura útil** `cx ≈ 6700800` a
+> `6950000` EMU (do `x=750000` ao `x=7450800`–`7700000`), **não**
+> ficar estreito em `cx=5950000`. O gold standard B1 slide 3 usa
+> `H1.cx=6700800` como padrão; itens da agenda chegam até `x=7929372`
+> (que entra em soft warning mas é tolerado por ser réplica do gold).
+> Estreitar caixas para `cx=5950000` deixa o conteúdo "espremido à
+> esquerda" e quebra a paridade visual com a Aula 1.
 
 Subzonas internas (top-down) — usar dentro do soft limit:
 
@@ -97,13 +109,46 @@ O script falha (exit 1) se algum shape ultrapassa o **hard limit**.
 Soft-limit é apenas avisado (warning prefixado por `[soft]`). O deck só
 deve ser empacotado quando o validador retornar zero erros hard.
 
+### 0.4 Espaçamento mínimo entre formas (regra 12)
+
+Para garantir que **não haja sobreposição** nem aglomeração de texto,
+todo par de formas adjacentes (cards, caixas de texto, ícones, números)
+deve ter um respiro de **no mínimo `60000` EMU** (≈ 0,17 cm) entre as
+bordas. Em pares de cards lado a lado da Aula 1, o gap medido é:
+
+| Par de formas | Gap horizontal (EMU) |
+|---|---|
+| Cards conexão (FCE5CD) — Aula 1 B1 slide 5 | `~178000` (entre `750000+2255100=3005100` e `3183033`) |
+| Cards 2×2 com selo (slide 16) | `180834` (entre `750000+3435300=4185300` e `4366134`) |
+| Cards atividade (slide 38 B2) — não há (1 card único) | — |
+
+| Par de formas | Gap vertical (EMU) |
+|---|---|
+| Faixa amarela canônica (`y=905100`, `cy=54900`) → Subtítulo amarelo (`y=1330000`) | `370000` |
+| Subtítulo amarelo → Início do corpo (`y=1700000`) | `~370000` (`y=1700000` − fim do subtítulo) |
+| Linhas da agenda 2×4 | `600000` (item para item, `1700000`, `2300000`, `2900000`, `3500000`) |
+| Linhas da síntese | `570000` (`1750000`, `2320000`, `2890000`, `3460000`, `4030000`) |
+
+Gaps menores que `60000` em qualquer direção são **proibidos** (pode
+gerar texto com aparência colada). Gaps maiores que os medidos da Aula
+1 também são desencorajados (rompem o ritmo visual canônico).
+
+A inspeção JPEG (item 9 da `pptx-qa`) é onde a sobreposição de **texto
+sobre texto** (causada por fonte que não cabe na caixa, ou por texto
+mais longo do que o esperado) é detectada. Quando aparecer, encurte o
+texto ou reduza a fonte um ponto, **não** aumente a caixa para fora do
+soft limit.
+
 ---
 
 ## 1. Regra de fundos (image1.png × image2.png)
 
-A Aula 1 fixa o seguinte uso (e este é o padrão da disciplina):
+A Aula 1 (gold standard) fixa o seguinte uso (regras 4 e 5 da
+disciplina). **As referências `image1.png` e `image2.png` aqui se
+referem aos nomes finais no `.pptx` empacotado**, após o swap
+idempotente do build script:
 
-| Tipo de slide | Fundo | Razão |
+| Tipo de slide | Fundo (no `.pptx` final) | Razão |
 |---|---|---|
 | Capa do bloco | `image1.png` | Fundo "forte": faixa amarela cheia + logo no amarelo. |
 | Transição de tópico (01, 02, 03…) | `image1.png` | Mesmo fundo "forte" para abrir cada seção. |
@@ -116,15 +161,27 @@ A Aula 1 fixa o seguinte uso (e este é o padrão da disciplina):
 | Slides de correção da atividade (Q1, Q2, Q3) | `image2.png` | Idem. |
 | Demais slides de **conteúdo** (conceito, stat, tabela, comparação, etc.) | `image2.png` | Idem. |
 
+### Equivalência template ↔ `.pptx` final
+
+O `docs/templates/layout.pptx` (não-swapped) tem os PNGs **com nomes
+trocados** em relação à convenção visual da disciplina. A
+correspondência é:
+
+| Conteúdo visual | Nome no `layout.pptx` | Nome no `.pptx` final (após swap) |
+|---|---|---|
+| Fundo "forte" (capa/transição/fim) | `image2.png` | `image1.png` |
+| Fundo "suave" (conteúdo) | `image1.png` | `image2.png` |
+
+> **Quando o usuário pedir "use o image2.png do `layout.pptx` para
+> capa"**, está se referindo ao **conteúdo visual do PNG físico no
+> template** (o "forte"). Esse mesmo conteúdo, depois do swap
+> idempotente, fica salvo como `image1.png` no `.pptx` final. **Os
+> `.rels` finais sempre referenciam pelos nomes finais** (`image1.png`
+> para capa/transição/fim, `image2.png` para o resto).
+
 A regra técnica continua: **não altere o bloco `<p:bg>...</p:bg>`** dos
 slides; mude apenas o `Target` do `rId3` em `slideN.xml.rels` quando
 precisar trocar o fundo de uma cópia.
-
-> **Aviso histórico:** versões anteriores de `instrucao_geral.md` e
-> `pedagogical-structure.md` indicavam o oposto (`image2` para
-> capa/transição/fim, `image1` para conteúdo). A Aula 1 publicada usa o
-> que está acima e passa a ser **norma**. A Aula 2 · Bloco 1 já entregue
-> está com os fundos invertidos e está marcada para retrabalho.
 
 ### 1.1 Bug do template e protocolo obrigatório de build
 
@@ -210,13 +267,24 @@ slides 3, 4, 5, 46, 47 e 48.
 
 | Camada | off x | off y | cx | cy | sz | Fonte | Cor | Texto |
 |---|---|---|---|---|---|---|---|---|
-| **H1** | `750000` | `500000` | `5950000` | `900000` | `2400` | Arial Black | `#1B2A4A` | Título do slide |
-| **Faixa amarela** | `750005` | `905100` | `1500000` | `54900` | — | — | `#E8A317` | (vazio) |
-| **Subtítulo amarelo** (opcional) | `750000` | `1330000` | `5950000` | `400000` | `1400` | Arial bold | `#E8A317` | Frase curta de apoio |
-| **Início do corpo** | `750000` | `~1700000`–`1780000` | `5950000` | livre | `1200`–`1400` | Arial | `#333333` | Conteúdo |
+| **H1** | `750000` | `500000` | **`6700800`** (canônico) ou até `7172100` | `900000` | `2400` (caso bem largo: `2200` ou `2000`) | Arial Black | `#1B2A4A` | Título do slide |
+| **Faixa amarela** (regra 11) | `750005`–`750006` | `905100` | `1500000`–`1808100` (varia com largura do H1) | `54900` (fixo) | — | — | `#E8A317` | (vazio) |
+| **Subtítulo amarelo** (opcional) | `750000` | `1330000` | mesma largura do H1 (canônico `6700800`) | `399900`–`400000` | `1400` | Arial regular | `#E8A317` | Frase curta de apoio |
+| **Início do corpo** | `750000` | `~1500000`–`1780000` | livre, **alvo `6950000`** (até `x=7700000`) | livre | `1200`–`1400` | Arial | `#333333` | Conteúdo |
+
+> **Largura do H1 e da faixa amarela.** Os slides estruturais da Aula 1
+> ajustam a `cx` do H1 para acomodar o título inteiro em uma única
+> linha, dentro do soft limit. Valores observados na Aula 1 B1: agenda
+> `cx=6700800`, objetivos `cx=5950000`, conexão `cx=6201900`, síntese
+> `cx=7150200`, ponte `cx=7135500`, referências `cx=7143000`,
+> atividade prática `cx=6960600`. **A faixa amarela acompanha** com
+> `cx` proporcional (entre `1500000` e `1808100`), sempre alinhada a
+> `x=750005`/`750006` e altura fixa `54900`. Só o **comprimento da
+> faixa varia** — `y` e `cy` são fixos.
 
 A faixa amarela sob o H1 é **inegociável** em qualquer slide com título
-textual. Só pode ser omitida em diagramas full-bleed sem H1 (raro).
+textual (regra 11). Só pode ser omitida em diagramas full-bleed sem H1
+(raro).
 
 ### Subtítulos amarelos canônicos (frases-fórmula)
 
@@ -248,20 +316,22 @@ Geometria diferente do cabeçalho estrutural — eixo horizontal alinhado a
 | Título da disciplina (caixa alta) | `1097275` | `914400` | `6790500` | `1828800` | **`3200`** | Arial Black | `#1B2A4A` | `JURIMETRIA E ANÁLISE DE DADOS PARA DECISÕES ESTRATÉGICAS` |
 | Faixa amarela horizontal | `1097280` | `2788920` | `1828800` | `54864` | — | — | `#E8A317` | (vazio) |
 | Linha "Aula X – Bloco Y" | `1097280` | `2926080` | `5486400` | `457200` | `2000` | Arial | `#E8A317` | `Aula X – Bloco Y` |
-| Subtítulo do bloco (cinza) | `1097280` | `3337560` | `5486400` | `365760` | `1400` | Arial | `#666666` | Frase do tema, máx. 2 linhas |
+| Subtítulo do bloco (cinza) | `1097280` | `3337560` | `5486400` | `365760`–`550000` | `1400` | Arial | `#666666` | Frase do tema, máx. 2 linhas |
 
-**Fundo:** `image1.png`.
+**Fundo:** `image1.png` (após swap; corresponde ao `image2.png` do
+`layout.pptx` original).
 
-> **Por que `sz=3200` e não `sz=3600`?** A versão original (Aula 1
-> publicada) usa `sz=3600`. Em renderizadores que carregam a Arial Black
-> real (PowerPoint, LibreOffice GUI, Keynote), `sz=3600` faz o título de
-> 53 caracteres quebrar em **4 linhas** e a 4ª linha (`ESTRATÉGICAS`)
-> sobrepõe a faixa amarela e a linha `Aula X – Bloco Y`. O `soffice
-> --headless` usado no QA local cai num fallback de fonte mais estreito
-> e não detecta o estouro. `sz=3200` reduz o título 11% mas garante 3
-> linhas em qualquer renderizador. **Este é o tamanho canônico a partir
-> de 2026-05-02; a Aula 1 publicada está marcada para retrabalho neste
-> ponto.**
+> **Por que `sz=3200` e não `sz=3600`?** O XML do gold standard (Aula 1
+> B1/B2 slide 1) está com `sz=3600`. Em renderizadores que carregam a
+> Arial Black real (PowerPoint, LibreOffice GUI, Keynote), `sz=3600`
+> faz o título de 53 caracteres quebrar em **4 linhas** e a 4ª linha
+> (`ESTRATÉGICAS`) sobrepõe a faixa amarela e a linha `Aula X – Bloco
+> Y` (regra 12 violada). O `soffice --headless` usado no QA local cai
+> num fallback de fonte mais estreito e não detecta o estouro.
+> `sz=3200` reduz o título 11% mas garante 3 linhas em qualquer
+> renderizador. **Aula 1 publicada está marcada para retrabalho neste
+> ponto** (mesma sobreposição). Incidente confirmado em PowerPoint em
+> 2026-05-03.
 
 ---
 
@@ -272,51 +342,63 @@ Mesma geometria nas demais transições da Aula 1 (slides 12, 17, 20, 26, 31, 34
 
 | Camada | off x | off y | cx | cy | sz | Fonte | Cor | Texto |
 |---|---|---|---|---|---|---|---|---|
-| Número grande | `1097275` | `900000` | **`2400000`** | `1100000` | **`9600`** (96pt) | Arial Black | `#E8A317` | `01`, `02`, … |
+| Número grande | `1097275` | `900000` | **`1800000`** | `1100000` | **`9600`** (96pt) | Arial Black | `#E8A317` | `01`, `02`, … |
 | Título do tópico | `1097275` | `2100000` | `6500000` | `1100000` | `3600` | Arial Black | `#1B2A4A` | Nome do tópico |
 | Faixa amarela | `1097280` | `3250000` | `1500000` | `54864` | — | — | `#E8A317` | (vazio) |
 | Subtítulo cinza | `1097280` | `3400000` | `5486400` | `500000` | `1400` | Arial | `#666666` | Frase de contexto |
 
-**Fundo:** `image1.png`.
+**Fundo:** `image1.png` (após swap; corresponde ao `image2.png` do
+`layout.pptx` original).
 
-> **Por que `cx=2400000` e não `cx=1800000`?** A versão original
-> (Aula 1 publicada) usa `cx=1800000`. Com Arial Black real a 96pt,
-> "01"/"02"/... ocupa ~1.7M EMU; com `cx=1800000` e os insets padrão
-> (lIns=rIns=91440), a largura útil cai para ~1.62M EMU e o segundo
-> dígito quebra para a linha de baixo, sobrepondo o título. `cx=2400000`
-> dá margem segura. Vale o mesmo aviso da capa: o `soffice --headless`
-> não detecta a quebra. **Tamanho canônico a partir de 2026-05-02; Aula 1
-> publicada está marcada para retrabalho.**
+> **Tamanho `cx=1800000` é o canônico.** Confirmado no XML do gold
+> standard (Aula 1 B1 slide 6, edição mais recente). Com 96pt, "01"
+> ocupa ~1.7M EMU e cabe em `cx=1800000` na fonte real e nos
+> renderizadores comuns. **Não aumente** para `cx=2400000`: a Aula 1
+> (gold standard) usa `1800000`.
 
 ---
 
 ## 5. Agenda do bloco
 
-Slide-fonte: `aula1_bloco1/slide3.xml`. Cabeçalho padrão (seção 2).
+Slide-fonte: `aula1_bloco1/slide3.xml` (B1, 8 itens) e
+`aula1_bloco2/slide2.xml` (B2, 8 itens). Cabeçalho padrão (seção 2).
 
-Corpo: **grade de até 8 itens em 2 colunas × 4 linhas**.
+Corpo: **grade de 8 itens em 2 colunas × 4 linhas** (alvo da Aula 1).
 
 Coordenadas dos itens (cada item é um par "elipse + título"):
 
-| Linha | y (elipse e título) |
-|---|---|
-| 1 | `1700000` (elipse) / `1760000` (título) |
-| 2 | `2300000` / `2360000` |
-| 3 | `2900000` / `2960000` |
-| 4 | `3500000` / `3560000` |
+| Linha | y elipse | y título |
+|---|---|---|
+| 1 | `1700000` (B1) / `1750000` (B2) | `1760000` (B1) / `1810000` (B2) |
+| 2 | `2300000` / `2350000` | `2360000` / `2410000` |
+| 3 | `2900000` / `2950000` | `2960000` / `3010000` |
+| 4 | `3500000` / `3550000` | `3560000` / `3610000` |
+
+Passo vertical fixo: `600000` EMU.
 
 | Coluna | off x da elipse | off x do título |
 |---|---|---|
-| Esquerda | `781363` | `1301363` |
-| Direita | `4204761` | `4724761` |
+| Esquerda | `750000`–`785321` | `1370945`–`1375529` |
+| Direita | `4358824`–`4640749` | `4984353`–`5226372` |
 
-Forma de cada item:
+Forma de cada item (medidas observadas no gold standard):
 
-- **Elipse navy** (`prstGeom prst="ellipse"`, fill `#1B2A4A`): `cx=420000`, `cy=420000`. Dentro: número `sz=1600`, Arial Black, cor `#E8A317`, alinhado ao centro.
-- **Título do item**: caixa de texto `cx=2400000`, `cy=399900`, `sz=1200`, Arial, cor `#1B2A4A`, alinhado à esquerda, ancorado ao centro vertical.
+- **Elipse navy** (`prstGeom prst="ellipse"`, fill `#1B2A4A`):
+  `cx=473100`–`505200`, `cy=420000`. Note que **é elíptica, não
+  circular** (a Aula 1 usa proporção ligeiramente alongada). Dentro:
+  número `sz=1600`, Arial Black, **cor `#FFFFFF` (branco — `schemeClr
+  lt1` no XML do gold standard)**, alinhado ao centro. **Regra 10:
+  fundo navy = texto branco, nunca amarelo.** Erro comum: usar
+  `#E8A317` na numeração — viola a regra de combinação de cores.
+- **Título do item**: caixa de texto `cx=2703000`–`2887200`,
+  `cy=399900`, `sz=1200`, Arial, cor `#1B2A4A`, alinhado à esquerda,
+  ancorado ao centro vertical.
 
-Se a agenda tiver menos itens, **mantenha** o passo vertical e use só as
-linhas necessárias começando em `y=1700000`.
+> **Por que 8 itens?** Os blocos do gold standard listam todos os
+> tópicos do plano (até 8). Se o bloco real tiver menos tópicos
+> agrupáveis, **mantenha** a grade 2×4 e o passo vertical, preenchendo
+> só as linhas necessárias começando em `y=1700000`. Não comprima nem
+> centralize verticalmente.
 
 ---
 
@@ -353,23 +435,31 @@ Cabeçalho padrão + linha de texto introdutório navy:
 |---|---|---|---|---|---|---|---|
 | Texto introdutório | `750000` | `1730000` | `5950000` | `340000` | `1400` | Arial | `#333333` |
 
-Corpo (B1): **3 cards pastel `#FCE5CD`** lado a lado.
+Corpo (B1, slide 5): **3 cards pastel `#FCE5CD`** (`roundRect`,
+`adj≈6500`) lado a lado.
 
 | Card | off x | cx | cy | y |
 |---|---|---|---|---|
-| Esquerda | `750000` | `2163600` | `2000100` | `2150000` |
-| Centro | `3084250` | `2163600` | `2000100` | `2150000` |
-| Direita | `5418499` | `2163600` | `2000100` | `2150000` |
+| Esquerda | `750000` | `2255100` | `2000100` | `2150000` |
+| Centro | `3183033` | `2255100` | `2000100` | `2150000` |
+| Direita | `5616064` | `2255100` | `2000100` | `2150000` |
 
-Dentro de cada card (off x interno = card_x + 170799):
+Gap horizontal entre cards: `~178000` EMU.
 
-- **Tag amarela em caps** (HOJE / AULAS X-Y / AULA Z): `y=2300000`, `cx=1821900`, `cy=300000`, `sz=1200`, Arial Black, `#E8A317`.
+Dentro de cada card (off x interno = card_x + 178027):
+
+- **Tag amarela em caps** (HOJE / AULAS X-Y / AULA Z): `y=2300000`, `cx=1899000`, `cy=300000`, `sz=1200`, Arial Black, `#E8A317`.
 - **Título do card** (Fundamentos / Método e aceleração / Apresentação): `y=2630000`, `cy=500100`, `sz=1400`, Arial Black, `#1B2A4A`.
 - **Descrição**: `y=3200000`, `cy=900000`, `sz=1200`, Arial, `#333333`.
 
-> Variantes (ex.: B2 com layout de "Onde paramos"): mantenha o cabeçalho
-> padrão e adapte o corpo, mas prefira reutilizar a geometria de cards
-> sempre que houver 2 ou 3 colunas equivalentes a comparar.
+Corpo (B2, slide 4 — "Voltando do intervalo"): **3 cards
+alternados `#F4F4F4` / `#FFF7E6` / `#F4F4F4`**, mesma geometria base
+mas `cy=1850100` a `y=2400000`. Tag amarela em caps (`Bloco 1` / `Bloco
+2` / `Aula 2`), título em maiúsculas navy (`FUNDAMENTOS`), descrição
+cinza. Ver `aula1_bloco2/slide4.xml`.
+
+> Sempre que houver 2 ou 3 colunas equivalentes a comparar, prefira
+> reutilizar a geometria desses cards.
 
 ---
 
@@ -377,13 +467,14 @@ Dentro de cada card (off x interno = card_x + 170799):
 
 Slide-fonte: `aula1_bloco1/slide46.xml`. Cabeçalho padrão.
 
-Corpo: **5 itens verticais** com selo numerado amarelo + texto.
+Corpo: **5 itens verticais** com selo numerado amarelo (**elipse**, não
+quadrado) + texto.
 
 | Camada por item | off x | cx | cy | sz | Fonte | Cor |
 |---|---|---|---|---|---|---|
-| Quadrado amarelo (`prstGeom prst="rect"`) | `750000` | `500000` | `500000` | — | — | `#E8A317` |
-| Número branco dentro do quadrado | (mesma caixa) | (mesma) | (mesma) | `2000` | Arial Black | `#FFFFFF` |
-| Texto descritivo | `1350000` | `5300000` | `450000` | `1250` | Arial | `#333333` |
+| **Elipse** amarela (`prstGeom prst="ellipse"`) | `750000` | `600900` | `500100` | — | — | `#E8A317` |
+| Número branco dentro da elipse | (mesma caixa) | (mesma) | (mesma) | `2000` | Arial Black | `#FFFFFF` |
+| Texto descritivo | `1471034` | `6369000` | `450000` | `1250` | Arial | `#333333` |
 
 `y_item` por linha (5 itens):
 
@@ -392,6 +483,10 @@ Corpo: **5 itens verticais** com selo numerado amarelo + texto.
 ```
 
 Passo vertical de `570000` EMU.
+
+> **Atenção:** o gold standard usa **elipse** (não quadrado/rect) como
+> selo. Versões anteriores deste arquivo descreviam um `rect` 500×500.
+> Substitua para `ellipse` 600900×500100.
 
 > Se o bloco gerar 3 ou 4 pontos-chave em vez de 5, mantenha o mesmo
 > passo e termine em y mais alto. Não comprima para encher 5.
@@ -408,17 +503,17 @@ Hero (esquerda):
 
 | Camada | off x | off y | cx | cy | sz | Fonte | Cor |
 |---|---|---|---|---|---|---|---|
-| Seta `➜` | `750000` | `1585100` | `1500000` | `594900` | `6000` | Arial Black | `#E8A317` |
-| Título de destaque | `2200000` | `1780000` | `4500000` | `400000` | `2000` | Arial Black | `#1B2A4A` |
-| Descrição cinza | `2200000` | `2100000` | `4500000` | `399900` | `1250` | Arial | `#666666` |
+| Seta `➜` | `750000` | `1585100` | `1652100` | `594900` | `6000` | Arial Black | `#E8A317` |
+| Título de destaque | `2346910` | `1780000` | `4956000` | `399900` | `2000` | Arial Black | `#1B2A4A` |
+| Descrição cinza | `2346910` | `2100000` | `4956000` | `399900` | `1250` | Arial | `#666666` |
 
 Lista de 4 itens (passo vertical `430000` a partir de `y=2600000`):
 
 | Camada por item | off x | cx | cy | sz | Fonte | Cor |
 |---|---|---|---|---|---|---|
-| Bullet amarelo (`prstGeom prst="ellipse"`) | `790000` | `197700` | `180000` | — | — | `#E8A317` |
-| Título do item | `1075695` | `2637300` | `300000` | `1250` | Arial | `#1B2A4A` |
-| Descrição do item | `3822762` | `3406500` | `300000` | `1150` | Arial | `#333333` |
+| Bullet amarelo (`prstGeom prst="ellipse"`) | `794053` | `217800` | `180000` | — | — | `#E8A317` |
+| Título do item | `1108694` | `2904600` | `300000` | `1250` | Arial | `#1B2A4A` |
+| Descrição do item | `4134087` | `3751500` | `300000` | `1150` | Arial | `#333333` |
 
 `y` por item: `2600000`, `3030000`, `3460000`, `3890000` (bullet a `+50000` y).
 
@@ -432,8 +527,8 @@ Corpo:
 
 | Camada | off x | off y | cx | cy | sz | Fonte | Cor |
 |---|---|---|---|---|---|---|---|
-| Caixa única com referências em ABNT | `750000` | `1780000` | `7025100` | `2799900` | `1150` | Arial | `#333333` |
-| Rodapé cinza explicativo | `750000` | `4300000` | `5950000` | `300000` | `1000` | Arial | `#666666` |
+| Caixa única com referências em ABNT | `750000` | `1780000` | `7143000` | `2799900` | `1150` | Arial | `#333333` |
+| Rodapé cinza explicativo | `750000` | `4300000` | `6049800` | `300000` | `1000` | Arial | `#666666` |
 
 Cada referência ABNT em parágrafo separado. Rodapé padrão sugerido:
 `Leituras complementares estarão indicadas ao longo dos próximos blocos.`
@@ -489,16 +584,23 @@ Próxima aula: <ementa em uma frase>.
 
 ## 12. Atividade Prática (apenas Bloco 2 das Aulas 1 a 4)
 
-Slide-fonte: `aula1_bloco2/slide38.xml`. Cabeçalho padrão (H1 + faixa amarela). Subtítulo amarelo "Entrega até a Aula N+1".
+Slide-fonte: `aula1_bloco2/slide38.xml`. Cabeçalho padrão (H1 + faixa
+amarela). Subtítulo amarelo "Entrega até a Aula N+1" — note que o
+**subtítulo amarelo da atividade fica em `y=1102612`** (mais próximo do
+H1 do que nos demais slides estruturais), porque o card navy começa
+logo abaixo a `y=1522612`.
 
-Corpo:
+Corpo (medidas extraídas do gold standard `aula1_bloco2/slide38.xml`):
 
 | Camada | off x | off y | cx | cy | sz | Fonte | Cor |
 |---|---|---|---|---|---|---|---|
-| Card navy alto (`prstGeom prst="rect"`, fill `#1B2A4A`) | `750000` | `1522612` | `6847800` | `800100` | — | — | `#1B2A4A` |
-| Título da atividade dentro do card | `922633` | `1592612` | `6502500` | `660000` | `1700` | Arial Black | `#E8A317` |
-| Caixa "Você deverá produzir" (fundo navy) | `750000` | `2472612` | `6847800` | `300000` | `1400` | Arial Black | `#FFFFFF` |
-| Bloco com Pergunta 1./2./3. | `750000` | `2772600` | `7020000` | `1861200` | `1100` | Arial | `#E8A317` (numeração) / `#333333` (texto) |
+| H1 "Atividade Prática N" | `750000` | `500000` | `6960600` | `900000` | `2400` | Arial Black | `#1B2A4A` |
+| Subtítulo amarelo "Entrega até a Aula N+1" | `750000` | `1102612` | `6960600` | `399900` | `1400` | Arial | `#E8A317` |
+| Faixa amarela canônica | `750005` | `905100` | `1524600` | `54900` | — | — | `#E8A317` |
+| Card navy alto (`roundRect`, `adj≈6500`, fill `#1B2A4A`) | `750000` | `1522612` | `6960600` | `800100` | — | — | `#1B2A4A` |
+| Título da atividade dentro do card | `925479` | `1592612` | `6609600` | `660000` | `1700` | Arial Black | `#E8A317` |
+| Caixa "Você deverá produzir" (texto navy bold sobre fundo do slide) | `750000` | `2472612` | `6960600` | `300000` | `1400` | Arial Black | `#1B2A4A` |
+| Bloco com Pergunta 1./2./3. | `750000` | `2772600` | `7135800` | `1861200` | `1100` | Arial | `#E8A317` (numeração bold) / `#333333` (texto regular) |
 
 Estrutura textual obrigatória (3 questões, sempre nesta forma):
 
@@ -554,12 +656,15 @@ Catálogo de padrões já validados na Aula 1 (com slide-fonte para copiar):
 
 | Padrão | Slide-fonte | Composição |
 |---|---|---|
-| **Diagrama de Venn 3 círculos** | `aula1_bloco1/slide22.xml` | 3 elipses semitransparentes (navy, amarelo, azul claro) sobrepostas + rótulos brancos no centro de cada uma + card lateral cinza com legenda das interseções. |
-| **Cards 2×2 com selo numerado** | `aula1_bloco1/slide36.xml` | 4 `roundRect` com borda navy fina + elipse amarela com número branco + título navy + descrição cinza. Grade 2 colunas × 2 linhas. |
-| **Comparação 2 colunas com cards coloridos** | `aula1_bloco1/slide43.xml` | 2 `roundRect` lado a lado: esquerda fundo `#F4F4F4`, direita fundo `#FCE5CD` (pastel amarelo). Tag em caps no topo, bullets quadrados amarelos, frase de fechamento em italic abaixo. |
-| **Tabela com coluna semântica** | `aula1_bloco1/slide38.xml` | Tabela `<a:tbl>` com cabeçalho navy + linhas zebradas + última coluna com cores semânticas (verde negativo, navy base, amarelo positivo) + caixa de "Insight" com fundo `#FCE5CD` abaixo. |
-| **Comparação 2 colunas (tabela)** | `aula1_bloco1/slide29.xml` | Tabela `<a:tbl>` com primeira coluna em bold navy (rótulo da dimensão) e duas colunas de comparação. Cabeçalho navy. |
+| **Cards brancos com borda navy + selo numerado** ⭐ | `aula1_bloco1/slide16.xml` | 4 `roundRect` fill `#FFFFFF` + `<a:ln w="12700">` navy `#1B2A4A` + elipse amarela `602700×500100` com número branco `sz=2000` + título navy + descrição cinza. Grade 2 colunas × 2 linhas a `x=750000`/`4366134`, `y=1750000`/`3070000`, ext `3435300×1179900`. Padrão da regra 10 (cards com fundo branco devem ter borda navy). |
+| **Card branco + barra navy de título** ⭐ (single column) | inspirado em `aula1_bloco1/slide43.xml` (comparação de 2 cards com headers coloridos) | 1 `roundRect` externo fill `#FFFFFF` + borda navy `w=12700` + barra interna no topo `rect`/`roundRect` fill `#1B2A4A` com texto **branco** Arial Black centralizado (regra 10) + parágrafos navy/cinza no corpo. Substitui o card cinza `#F4F4F4` para conceitos que precisam de mais destaque visual. Ideal para slides de mini-caso, exemplos práticos, exercícios dirigidos e síntese de etapa. |
+| **Diagrama de Venn 3 círculos** | `aula1_bloco1/slide22.xml` | 3 elipses semitransparentes (navy, amarelo, azul claro) sobrepostas + rótulos brancos no centro de cada uma + card lateral cinza com legenda das interseções. Citação `Fonte: ABJ` em rodapé `sz=800` cinza `#999999`. |
+| **Cards 2×2 com selo numerado** | `aula1_bloco1/slide36.xml` | 4 `roundRect` fill `#FFFFFF` com borda navy + elipse amarela `553500×459900` com número branco + título navy + descrição cinza `sz=1050`. Grade 2×2 a `x=750000`/`4358824`, `y=1750000`/`3030000`, ext `3428400×1179900`. |
+| **Comparação 2 colunas com cards coloridos** | `aula1_bloco1/slide43.xml` | 2 `roundRect` lado a lado: esquerda fundo `#F4F4F4` (`x=750000`), direita fundo `#FFF7E6` (pastel amarelo, `x=4404092`), ambos `ext=3414600×2199900` a `y=1570575`. Tag em caps no topo (`NO DIREITO` navy / `NA JURIMETRIA` amarela), descrição cinza, frase de fechamento em italic navy a `y=4094375`. |
+| **Tabela "manual" com cabeçalho navy + zebrado** | `aula1_bloco1/slide38.xml` | Linhas como pares de `rect`: cabeçalho `fill=#1B2A4A` com texto branco; linhas alternadas `fill=#FFFFFF` e `fill=#F4F4F4`. Última coluna pode ter cores semânticas (verde `#2D7D4F`, navy, amarelo). Geometria: 4 colunas a `x=750000`/`2784636`/`4460218`/`6135800`, alturas `360000` por linha, gap zero (linhas coladas para parecer tabela). |
+| **Comparação 2 colunas (tabela nativa)** | `aula1_bloco1/slide29.xml` | Tabela `<a:tbl>` com primeira coluna em bold navy (rótulo da dimensão) e duas colunas de comparação. Cabeçalho navy. |
 | **Quadro de stat secundário** | `aula1_bloco1/slide14.xml` (Panorama Financeiro) | 3 stat callouts pequenos lado a lado: número grande amarelo + label cinza, com leve `roundRect` de fundo. |
+| **Caixa de definição navy com texto branco** | qualquer slide de definição (regra 10) | `rect` ou `roundRect` fill `#1B2A4A` (navy ibmec) + texto branco `#FFFFFF` `sz=1400` Arial Black centralizado. Usar para destacar definições e textos importantes. **Nunca** texto amarelo sobre navy — usar branco. |
 
 Princípios para usar livremente:
 
@@ -587,18 +692,34 @@ XML do slide-fonte** indicado na tabela. As medidas estão lá, calibradas.
 
 ## 15. Outros padrões visuais da Aula 1 incorporados como regra
 
-- **Citação no rodapé interno**: `off x=750000`, `off y=4350000`, `cx=5950000`, `cy=200000`, `sz=1000`, Arial Italic, `#666666`. Obrigatória sempre que o slide introduzir um conceito relevante (ver `content-rules.md`).
+- **Citação no rodapé interno**: `off x=556250`–`750000`, `off y≈4339343`–`4350000`, `cx=3639300`–`5950000`, `cy=200000`–`270600`, `sz=800`–`1000`, Arial (italic opcional), `#666666` ou `#999999`. Obrigatória sempre que o slide introduzir um conceito relevante (ver `content-rules.md`). Exemplo Aula 1 B1 slide 22: `off=(556250, 4339343)`, `ext=(3639300, 270600)`, `sz=800`, `#999999`.
 - **Stat callout**: número em Arial Black `sz=9600` `#E8A317` + label Arial `sz=1600` `#666666`.
-- **Cards genéricos**: `roundRect` `adj≈6500`, fundo `#F4F4F4` ou `#FCE5CD` (pastel amarelo), borda navy `9525`.
+- **Cards genéricos cinza/pastel**: `roundRect` `adj≈6500`, fundo `#F4F4F4` ou `#FCE5CD` ou `#FFF7E6` (pastel amarelo), sem borda explícita.
+- **Cards brancos com borda navy** (regra 10): `roundRect` `adj≈6500`, fundo `#FFFFFF`, borda `<a:ln w="12700">` `#1B2A4A`. Padrão obrigatório quando o card tiver fundo branco.
+- **Caixa de definição navy com texto branco** (regra 10): `rect` ou `roundRect` fundo `#1B2A4A`, texto `#FFFFFF` Arial Black centralizado. Usar para definições, conceitos-chave e textos em destaque. **Nunca usar texto amarelo sobre navy** — sempre branco.
 - **Bullets**: `<a:buChar>` ou `<a:buAutoNum>`. **Nunca** `•` literal.
-- **Bullets numerados visuais**: elipse navy `420000×420000` com número `sz=1600` Arial Black `#E8A317`.
+- **Bullets estilizados (regra 10)**: círculos amarelos (`ellipse` `#E8A317`) ou navy (`ellipse` `#1B2A4A`) como marcadores. Tamanhos típicos: `160000×160000` (objetivos), `217800×180000` (ponte), `473100×420000` (agenda), `600900×500100` (síntese).
+- **Bullets numerados visuais (agenda)**: elipse navy `473100×420000` (B1) ou `505200×420000` (B2) com número `sz=1600` Arial Black `#E8A317`.
 - **Marcadores de objetivo**: círculo amarelo `160000×160000`.
-- **Marcadores de síntese**: quadrado amarelo `500000×500000` com número branco `sz=2000`.
+- **Marcadores de síntese**: **elipse** amarela `600900×500100` com número branco `sz=2000`.
 - **Tag em caps**: Arial Black `sz=1200` `#E8A317` em caixa de `300000` de altura.
 
-Cores: navy `#1B2A4A`, amarelo `#E8A317`, cinza `#666666`/`#333333`,
-pastel amarelo `#FCE5CD`, fundo neutro `#F4F4F4`. Branco `#FFFFFF` apenas
-para texto sobre cards navy.
+Cores: navy `#1B2A4A`, amarelo `#E8A317`, cinza `#666666`/`#333333`/`#999999`,
+pastel amarelo `#FCE5CD`/`#FFF7E6`, fundo neutro `#F4F4F4`. Branco `#FFFFFF` apenas
+para texto sobre cards navy ou amarelos.
+
+### Combinações de cor proibidas (regra 10)
+
+| Combinação | Permitida? | Alternativa |
+|---|---|---|
+| Texto amarelo `#E8A317` sobre fundo navy `#1B2A4A` | ❌ NÃO | Usar texto branco `#FFFFFF` |
+| Texto navy `#1B2A4A` sobre fundo amarelo `#E8A317` | ❌ NÃO | Usar texto branco `#FFFFFF` |
+| Texto branco sobre fundo branco | ❌ NÃO (invisível) | Mudar fundo |
+| Texto cinza claro sobre fundo cinza | ❌ NÃO (contraste ruim) | Usar `#333333` ou `#1B2A4A` |
+| Texto navy sobre fundo branco | ✅ Sim | — |
+| Texto amarelo sobre fundo branco | ✅ Sim (apenas para subtítulos curtos) | Negrito recomendado |
+| Texto branco sobre fundo navy | ✅ Sim | — |
+| Texto branco sobre fundo amarelo | ✅ Sim (com bold/Black) | — |
 
 ---
 
