@@ -17,7 +17,7 @@
 | Bloco | Tema | Slides |
 |-------|------|--------|
 | 1 | Correção das 3 questões da Atividade 1 + ciclo + Etapas 1 (pergunta) e 2 (mapear) | [aula2_bloco1_jurimetria.pptx](slides/aula2_bloco1_jurimetria.pptx) |
-| 2 | Etapa 3 (coletar): fontes, scraping, APIs, LGPD, vieses + Atividade Prática 2 (3 questões) | _a produzir_ |
+| 2 | Etapa 3 (coletar): fontes, scraping, APIs, LGPD, vieses + Atividade Prática 2 (3 questões) | [aula2_bloco2_jurimetria.pptx](slides/aula2_bloco2_jurimetria.pptx) |
 
 > **Política de atividades.** A Atividade Prática só aparece no Bloco 2,
 > sempre com **3 questões numeradas (Q1, Q2, Q3)**. Por isso, o Bloco 1
@@ -32,7 +32,9 @@
 - `notebooks/` — notebooks Jupyter usados em sala.
 - `dados/` — datasets específicos desta aula (não versionados).
 
-## Como (re)gerar o pptx do Bloco 1
+## Como (re)gerar os pptx
+
+Bloco 1:
 
 ```bash
 uv run python .cursor/skills/build-aula-pptx/scripts/unpack_pptx.py \
@@ -44,15 +46,25 @@ uv run python .cursor/skills/build-aula-pptx/scripts/pack_pptx.py \
     /tmp/deck_aula2_bloco1/ aulas/aula_02/slides/aula2_bloco1_jurimetria.pptx
 ```
 
+Bloco 2 (o script faz `unpack` automaticamente em `/tmp/deck_aula2_bloco2/`
+e reaproveita os helpers de `build_aula2_bloco1.py`):
+
+```bash
+python3 aulas/aula_02/scripts/build_aula2_bloco2.py
+
+uv run python .cursor/skills/build-aula-pptx/scripts/pack_pptx.py \
+    /tmp/deck_aula2_bloco2/ aulas/aula_02/slides/aula2_bloco2_jurimetria.pptx
+```
+
 QA visual e textual:
 
 ```bash
 uv run python .cursor/skills/pptx-qa/scripts/render_to_pdf.py \
-    aulas/aula_02/slides/aula2_bloco1_jurimetria.pptx /tmp/qa/
+    aulas/aula_02/slides/aula2_blocoY_jurimetria.pptx /tmp/qa/
 uv run python .cursor/skills/pptx-qa/scripts/render_to_jpegs.py \
-    /tmp/qa/aula2_bloco1_jurimetria.pdf /tmp/qa/
+    /tmp/qa/aula2_blocoY_jurimetria.pdf /tmp/qa/
 uv run python .cursor/skills/pptx-qa/scripts/check_no_emdash.py \
-    aulas/aula_02/slides/aula2_bloco1_jurimetria.pptx
+    aulas/aula_02/slides/aula2_blocoY_jurimetria.pptx
 ```
 
 ## Atividade Prática 2 (apresentada no Bloco 2; entrega até a Aula 3)
