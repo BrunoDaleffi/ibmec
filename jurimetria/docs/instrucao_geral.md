@@ -30,7 +30,7 @@ Estas regras **não têm exceção**. Qualquer violação invalida o entregável
 
 1. **Preservar `image1.png` e `image2.png` como fundos.** Essas imagens definem a identidade visual (moldura cinza, faixa amarela lateral, logo ibmec, selo "ibmec.br"). Elas **nunca** são redesenhadas, redesenhadas por formas, substituídas ou cobertas por retângulos de fundo.
    - `image1.png` (fundo "forte") → **capa do bloco**, **transição de tópico** (numerados 01, 02, …) e **encerramento** ("Fim do Bloco N", "Fim da Aula N").
-   - `image2.png` (fundo "suave") → **todos os demais slides**: agenda, objetivos, conexão, síntese, ponte, referências, atividade prática, slides de correção e todo slide de conteúdo regular.
+   - `image2.png` (fundo "suave") → **todos os demais slides**: agenda, objetivos, conexão, síntese, ponte, referências, atividade prática, exercícios dirigidos (enunciado e resposta) e todo slide de conteúdo regular.
 2. **Editar o XML diretamente** dentro de `unpacked/ppt/slides/slideN.xml`, mantendo o bloco `<p:bg><p:bgPr><a:blipFill><a:blip r:embed="rId3">...` inalterado em cada slide, e mantendo o `rId3` apontando para a mídia correta (`image1.png` em capa/transição/encerramento, `image2.png` em todo o resto) via `slideN.xml.rels`.
 3. **Dimensões do slide:** 9144000 × 5143500 EMU (16:9). Nunca alterar.
 4. **Área útil em slides de conteúdo** (dentro da moldura branca de `image2.png`) — respeite estes limites para não invadir moldura cinza nem a faixa amarela:
@@ -48,8 +48,8 @@ Estas regras **não têm exceção**. Qualquer violação invalida o entregável
 Os decks **`aula1_bloco1_jurimetria.pptx`** e **`aula1_bloco2_jurimetria.pptx`**
 definem a **tipografia, geometria e hierarquia** que **toda** aula deve repetir
 para os mesmos **tipos de slide**: capa do bloco, agenda, objetivos, conexão,
-transição de tópico, correção de atividade (Aulas 2 a 5), atividade prática,
-síntese, referências e encerramento.
+transição de tópico, atividade prática, exercícios dirigidos (enunciado e
+resposta), síntese, referências e encerramento.
 
 Regras detalhadas, medidas em EMU e checklist estão em:
 
@@ -110,23 +110,36 @@ logo abaixo do título, como na Aula 1.
 
 Use esta macroestrutura como base e adapte ao conteúdo específico do bloco no plano. A estrutura é **diferente entre Bloco 1 e Bloco 2** por causa da política do Instrumento Avaliativo 1.
 
-### 7.0 Regra de atividade prática (Instrumento 1) — leia antes de planejar
+### 7.0 Regras de atividade — leia antes de planejar
 
-A atividade prática é **dada exclusivamente no Bloco 2** das aulas. **Nunca no Bloco 1.** Em paralelo, o **Bloco 1 das Aulas 2 a 5 abre com a correção comentada** da atividade entregue no Bloco 2 da aula anterior.
+**Instrumento Avaliativo 1 (Atividades Individuais por Aula).** A
+Atividade Prática é dada **exclusivamente no Bloco 2** das aulas, **nunca
+no Bloco 1**. É **individual**, contém **exatamente 3 questões** e é
+resolvida em casa pelo aluno. As 4 atividades são entregues **em
+conjunto, junto com a apresentação do trabalho final na Aula 6**. Daí:
+**não há slides de correção comentada** no início do Bloco 1 (nem em
+Aula nenhuma da disciplina).
 
-| Aula · Bloco | Correção da atividade no início? | Atividade nova no fim? |
-|---|---|---|
-| Aula 1 · Bloco 1 | Não. Primeiro bloco do curso. | Não. |
-| Aula 1 · Bloco 2 | Não. | **Sim. Atividade Prática 1.** |
-| Aula 2 · Bloco 1 | **Sim. Correção da Atividade 1.** | Não. |
-| Aula 2 · Bloco 2 | Não. | **Sim. Atividade Prática 2.** |
-| Aula 3 · Bloco 1 | **Sim. Correção da Atividade 2.** | Não. |
-| Aula 3 · Bloco 2 | Não. | **Sim. Atividade Prática 3.** |
-| Aula 4 · Bloco 1 | **Sim. Correção da Atividade 3.** | Não. |
-| Aula 4 · Bloco 2 | Não. | **Sim. Atividade Prática 4.** |
-| Aula 5 · Bloco 1 | **Sim. Correção da Atividade 4.** | Não. |
-| Aula 5 · Bloco 2 | Não. | Não. Espaço para preparação do trabalho final. |
-| Aula 6 · Blocos 1 e 2 | Não. | Não. Apresentações dos trabalhos. |
+**Modalidade online + atividades dirigidas.** A disciplina é online.
+Toda atividade dada em aula (exercício, mini-caso, discussão guiada)
+é **dirigida pelo professor**: o slide de enunciado é seguido **imediata-
+mente** por 1 a 3 slides com a resolução. Não há trabalho silencioso em
+sala. **Sem trabalho em grupo** entre alunos — a única exceção é o
+Instrumento Avaliativo 2 (trabalho final em grupo na Aula 6).
+
+| Aula · Bloco | Atividade nova no fim? |
+|---|---|
+| Aula 1 · Bloco 1 | Não. Primeiro bloco do curso. |
+| Aula 1 · Bloco 2 | **Sim. Atividade Prática 1.** |
+| Aula 2 · Bloco 1 | Não. |
+| Aula 2 · Bloco 2 | **Sim. Atividade Prática 2.** |
+| Aula 3 · Bloco 1 | Não. |
+| Aula 3 · Bloco 2 | **Sim. Atividade Prática 3.** |
+| Aula 4 · Bloco 1 | Não. |
+| Aula 4 · Bloco 2 | **Sim. Atividade Prática 4.** |
+| Aula 5 · Bloco 1 | Não. |
+| Aula 5 · Bloco 2 | Não. Espaço para preparação do trabalho final. |
+| Aula 6 · Blocos 1 e 2 | Não. Apresentações dos trabalhos. |
 
 ### 7.1 Macroestrutura do Bloco 1
 
@@ -134,8 +147,7 @@ A atividade prática é **dada exclusivamente no Bloco 2** das aulas. **Nunca no
 2. **1 slide. Agenda do bloco** (fundo `image2.png`). Lista numerada dos tópicos do bloco (extraídos do plano).
 3. **1 slide. Objetivos de aprendizagem** (fundo `image2.png`). 3 a 5 objetivos em verbos de ação ("Compreender...", "Aplicar...", "Interpretar...").
 4. **1 slide. Conexão com o caso XY&A ou com o trabalho final** (fundo `image2.png`, quando couber).
-5. **5 a 6 slides. Correção da atividade da aula anterior.** Apenas nas Aulas 2 a 5. Estrutura **obrigatória**: 1 slide de transição (fundo `image1.png`, título "Atividade N: o que aprendemos") + 1 slide de recap do que foi pedido (fundo `image2.png`) + **3 slides de correção (1 por questão, na mesma ordem da atividade, fundo `image2.png`)** + 1 slide de insight ou ponte para o conteúdo novo (fundo `image2.png`). Cada um dos 3 slides de correção tem título "Atividade N · Questão M" (M ∈ {1, 2, 3}), enunciado curto da questão e 2–4 bullets com o caminho de resposta esperado, exemplo XY&A e armadilhas observadas. **Não aplicável à Aula 1.**
-6. **~27 a 32 slides. Núcleo de conteúdo.** Divida em 2 a 4 tópicos, cada tópico aberto por um **slide de transição** (fundo `image1.png`, título grande do tópico) seguido de 6 a 10 slides de desenvolvimento (fundo `image2.png`). Alterne layouts:
+5. **~33 slides. Núcleo de conteúdo.** Divida em 3 a 5 tópicos, cada tópico aberto por um **slide de transição** (fundo `image1.png`, título grande do tópico) seguido de 6 a 10 slides de desenvolvimento (fundo `image2.png`). Alterne layouts:
    - Conceito, definição e exemplo jurídico
    - Stat callout (número grande com contexto)
    - Comparação em 2 colunas (por exemplo: qualitativo × quantitativo, média × mediana, modo raiz × modo com IA)
@@ -144,12 +156,12 @@ A atividade prática é **dada exclusivamente no Bloco 2** das aulas. **Nunca no
    - Mini-caso prático (XY&A)
    - Armadilhas e erros comuns
    - Citação de autor ou órgão (ABJ, CNJ, Nunes, Huff, Silver)
-7. **1 slide. Síntese do bloco** (fundo `image2.png`). 3 a 5 pontos-chave.
-8. **1 slide. Ponte para o Bloco 2 da mesma aula** (fundo `image2.png`).
-9. **1 slide. Referências do bloco** (fundo `image2.png`, da bibliografia do plano).
-10. **1 slide. Encerramento "Fim do Bloco N · Intervalo de 15 minutos"** (fundo `image1.png`, ver `layout-canonical.md` seção 11a).
+6. **1 slide. Síntese do bloco** (fundo `image2.png`). 3 a 5 pontos-chave.
+7. **1 slide. Ponte para o Bloco 2 da mesma aula** (fundo `image2.png`).
+8. **1 slide. Referências do bloco** (fundo `image2.png`, da bibliografia do plano).
+9. **1 slide. Encerramento "Fim do Bloco N · Intervalo de 15 minutos"** (fundo `image1.png`, ver `layout-canonical.md` seção 11a).
 
-> **Aula 1 · Bloco 1** é exceção. Como é o primeiro bloco do curso, o item 5 vira apresentação da disciplina, do caso XY&A e do trabalho final.
+> **Aula 1 · Bloco 1** mantém o slot inicial pós-conexão para apresentação da disciplina, do caso XY&A e do trabalho final, antes do núcleo.
 
 ### 7.2 Macroestrutura do Bloco 2
 
@@ -158,9 +170,9 @@ A atividade prática é **dada exclusivamente no Bloco 2** das aulas. **Nunca no
 3. **1 slide. Objetivos de aprendizagem** (fundo `image2.png`).
 4. **1 slide. Conexão / "Voltando do intervalo": o que ficou em aberto no Bloco 1** (fundo `image2.png`).
 5. **~30 a 33 slides. Núcleo de conteúdo.** Mesmo padrão de 3 a 5 tópicos com transição (`image1.png`) + desenvolvimento (`image2.png`) + alternância de layouts (ver lista do item 7.1).
-6. **1 a 2 slides. Exercício ou discussão em sala** (fundo `image2.png`, quando o plano indicar).
+6. **1 a 2 slides (ou mini-sequências de 2–4). Exercício dirigido ou discussão guiada** (fundo `image2.png`, quando o plano indicar). Padrão obrigatório: slide de **enunciado** seguido **imediatamente** por 1 a 3 slides de **resposta-modelo** comentada pelo professor. Sem trabalho em grupo entre alunos.
 7. **1 slide. Síntese do bloco** (fundo `image2.png`). 3 a 5 pontos-chave.
-8. **1 slide. Atividade Prática N** (fundo `image2.png`, apenas Aulas 1, 2, 3 e 4). Estrutura: título "Atividade Prática N — entrega até a Aula N+1" + **exatamente 3 questões numeradas (Q1, Q2, Q3)**, cada uma com no máximo 2 linhas, sobre XY&A e/ou o conteúdo da aula + lembrete do peso (média aritmética das 4 atividades = 3,0 pontos) + speaker notes com instrução de entrega e critério de correção por questão. As 3 questões e sua ordem são preservadas e usadas como base dos 3 slides de correção do Bloco 1 da aula seguinte (item 5 do Bloco 1).
+8. **1 slide. Atividade Prática N** (fundo `image2.png`, apenas Aulas 1, 2, 3 e 4). Estrutura: título "Atividade Prática N", subtítulo amarelo "Entrega junto com o trabalho final (Aula 6)" + **exatamente 3 questões numeradas (Q1, Q2, Q3)**, cada uma com no máximo 2 linhas, sobre XY&A e/ou o conteúdo da aula + lembrete do peso (média aritmética das 4 atividades = 3,0 pontos) + speaker notes com instrução de entrega (em casa, junto com o trabalho final) e critério de correção por questão. **Slide único, individual, sem slides de resposta no deck** — a atividade é resolvida em casa.
 9. **1 slide. Ponte para a próxima aula** (fundo `image2.png`).
 10. **1 slide. Referências do bloco** (fundo `image2.png`).
 11. **1 slide. Encerramento "Fim da Aula N · Lembrete da Atividade · Próxima aula"** (fundo `image1.png`, ver `layout-canonical.md` seção 11b).
@@ -272,12 +284,12 @@ Ao final, **antes de empacotar**, verifique o XML em busca de travessões em fun
 - [ ] Exatamente um `.pptx` em `/mnt/user-data/outputs/`.
 - [ ] 35 a 45 slides, alvo ~40.
 - [ ] Capa inicial, slides de transição de tópico e slide de encerramento com fundo `image1.png` intacto.
-- [ ] Todos os demais slides (agenda, objetivos, conexão, conteúdo, síntese, ponte, referências, atividade prática, correção) com fundo `image2.png` intacto.
+- [ ] Todos os demais slides (agenda, objetivos, conexão, conteúdo, síntese, ponte, referências, atividade prática, exercícios dirigidos) com fundo `image2.png` intacto.
 - [ ] Nenhum slide invade a faixa amarela nem cobre o logo ibmec.
 - [ ] Paleta respeitada (navy, amarelo, cinza, branco).
 - [ ] Todos os tópicos do bloco (conforme plano) presentes e na ordem.
 - [ ] **Tipos de slide padronizados** (capa, agenda, objetivos, transição,
-      atividade, síntese, referências, encerramento e, quando couber, correção)
+      atividade, exercício dirigido, síntese, referências, encerramento)
       **replicam layout e tipografia da Aula 1** (ver `layout-canonical.md`).
 - [ ] **Slides de conteúdo com H1** trazem a **faixa amarela horizontal** sob o
       título, no padrão da Aula 1, salvo exceção justificada (slide só diagrama).
@@ -286,9 +298,9 @@ Ao final, **antes de empacotar**, verifique o XML em busca de travessões em fun
 - [ ] **Todo conceito relevante traz a referência bibliográfica (Autor, ano) no rodapé interno do slide.**
 - [ ] Slide consolidado de referências presente ao final do bloco.
 - [ ] **Atividade Prática só aparece em Bloco 2 das Aulas 1, 2, 3 e 4. Nunca em Bloco 1.**
-- [ ] **Toda Atividade Prática tem exatamente 3 questões numeradas (Q1, Q2, Q3).**
-- [ ] **Bloco 1 das Aulas 2 a 5 começa com slides de correção da atividade do Bloco 2 anterior.**
-- [ ] **Cada Bloco 1 das Aulas 2 a 5 traz 3 slides de correção, 1 por questão, na mesma ordem da atividade.**
+- [ ] **Toda Atividade Prática tem exatamente 3 questões numeradas (Q1, Q2, Q3), em slide único individual com subtítulo `Entrega junto com o trabalho final (Aula 6)`.**
+- [ ] **Sem atividades em grupo no deck (única exceção: Instrumento Avaliativo 2, Aula 6).**
+- [ ] **Todo exercício/discussão/mini-caso dirigido em sala vem como enunciado seguido imediatamente de 1 a 3 slides de resposta-modelo comentada.**
 - [ ] QA visual feito via conversão para PDF/JPEG e inspeção.
 - [ ] `extract-text` sem placeholders nem "Lorem ipsum".
 - [ ] Entregue via `present_files`.

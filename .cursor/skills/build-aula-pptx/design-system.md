@@ -15,8 +15,8 @@ identidade visual da disciplina. **Nenhuma exceção.**
      Aula N").
    - `image2.png` (fundo "suave", logo no branco) → fundo de **todos os
      demais slides**: agenda, objetivos, conexão, síntese, ponte,
-     referências, atividade prática, slides de correção e todo slide de
-     conteúdo regular.
+     referências, atividade prática, exercícios dirigidos (enunciado e
+     resposta) e todo slide de conteúdo regular.
 
    > Padrão fixado pela **Aula 1 publicada**. Versões anteriores deste
    > arquivo indicavam o oposto; ver `layout-canonical.md` seção 1 para
@@ -208,9 +208,9 @@ Slide 16:9 padrão = 9144000 × 5143500 EMU = 25.4 cm × 14.29 cm.
 
 ## Layouts padronizados entre aulas (obrigatório)
 
-Os **tipos de slide** (capa, agenda, objetivos, transição, correção,
-atividade, síntese, referências, encerramento) e a **pilha tipográfica** da
-Aula 1 são **norma** para todas as aulas. Leia e siga:
+Os **tipos de slide** (capa, agenda, objetivos, transição, atividade,
+exercício dirigido, síntese, referências, encerramento) e a **pilha
+tipográfica** da Aula 1 são **norma** para todas as aulas. Leia e siga:
 
 - [`layout-canonical.md`](layout-canonical.md) — catálogo com referência aos
   `slideN.xml` da Aula 1 e checklist.

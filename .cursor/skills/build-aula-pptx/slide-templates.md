@@ -29,8 +29,8 @@ transição) ou `x≈822950` (encerramento), conforme cada seção abaixo.
 
 **Norma:** todo slide com H1 textual replica esta pilha. Vale para
 Agenda, Objetivos, Conexão, Síntese, Ponte, Referências, Atividade
-Prática, slides de correção, conceito, stat callout, comparação,
-diagrama, tabela e citação.
+Prática, exercícios dirigidos (enunciado e resposta), conceito,
+stat callout, comparação, diagrama, tabela e citação.
 
 ```xml
 <!-- H1 -->
@@ -885,7 +885,7 @@ Slide-fonte: `aula1_bloco2/slide42.xml`. Fundo: `image1.png`.
           <a:solidFill><a:srgbClr val="666666"/></a:solidFill>
           <a:latin typeface="Arial"/>
         </a:rPr>
-        <a:t>Entregar a Atividade N até a próxima aula.</a:t>
+        <a:t>Atividade N: responda em casa e entregue junto com o trabalho final (Aula 6).</a:t>
       </a:r>
     </a:p>
   </p:txBody>
@@ -913,16 +913,20 @@ Slide-fonte: `aula1_bloco2/slide42.xml`. Fundo: `image1.png`.
 </p:sp>
 ```
 
-> Em Aulas 5 (Bloco 2 sem atividade) e 6, troque "Lembrete: Entregar a
-> Atividade N…" pela frase apropriada (preparação do trabalho final ou
-> encerramento da disciplina).
+> Em Aulas 5 (Bloco 2 sem atividade) e 6, troque o lembrete pela frase
+> apropriada — na Aula 5: "Lembrete: prepare o trabalho final e a
+> entrega consolidada das 4 atividades"; na Aula 6: "Encerramento da
+> disciplina".
 
 ---
 
 ## 11. Atividade Prática (B2 das Aulas 1 a 4)
 
 Slide-fonte: `aula1_bloco2/slide38.xml`. Cabeçalho padrão (H1 + faixa
-amarela) com subtítulo amarelo `Entrega até a Aula N+1`.
+amarela) com subtítulo amarelo `Entrega junto com o trabalho final (Aula 6)`.
+
+> **Slide único, atividade individual.** Sem slides de correção/resposta
+> em sequência — a atividade é resolvida em casa pelo aluno.
 
 ```xml
 <!-- Card navy alto -->

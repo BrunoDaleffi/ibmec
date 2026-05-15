@@ -25,13 +25,17 @@ Esta skill orquestra a produção de **um arquivo `.pptx` para um único bloco**
 3. **Todo bloco contém:** (i) capa, (ii) agenda, (iii) objetivos,
    (iv) transições de tópico, (v) slide final de encerramento (do bloco
    ou da aula). Além disso:
-   - **Todo Bloco 1 (das Aulas 2 a 5)** contém **3 slides de correção
-     dos exercícios da aula anterior**, um slide por questão (Q1, Q2,
-     Q3), na mesma ordem do enunciado original. Aula 1 · Bloco 1 é a
-     única exceção (não há atividade anterior).
    - **Todo Bloco 2 (das Aulas 1 a 4)** contém **um único slide de
-     Atividade Prática**, com o enunciado das 3 questões e instruções
-     de entrega. Aulas 5 e 6 não têm Atividade Prática.
+     Atividade Prática individual**, com o enunciado das 3 questões
+     (Q1, Q2, Q3) e a instrução de entrega "junto com o trabalho final
+     (Aula 6)". Aulas 5 e 6 não têm Atividade Prática.
+   - **A disciplina é online.** Não há slides de correção comentada da
+     Atividade Prática no deck — as 4 entregas são resolvidas em casa
+     pelo aluno e entregues em conjunto na Aula 6. Qualquer exercício,
+     mini-caso ou discussão **dirigida em sala** vem como enunciado
+     em um slide seguido da resposta comentada nos 1 a 3 slides
+     seguintes (sem trabalho em grupo entre alunos, exceto Instrumento
+     Avaliativo 2 na Aula 6).
 4. **Capa, transição de tópico e encerramento usam o fundo `image2.png`
    do `docs/templates/layout.pptx`** (o "forte", com faixa amarela
    cheia + logo no amarelo).
@@ -145,9 +149,12 @@ Antes de planejar slides, leia (se ainda não estiverem no contexto):
   citação por conceito, fio condutor XY&A, registro PT-BR formal-didático.
 - [`pedagogical-structure.md`](pedagogical-structure.md) — macroestrutura
   de **exatamente 40 slides**, **diferente entre Bloco 1 e Bloco 2**.
-  Atividade prática só no Bloco 2 (Aulas 1 a 4). Bloco 1 das Aulas 2 a
-  5 abre com a correção comentada da atividade do Bloco 2 da aula
-  anterior, em **3 slides de correção (1 por questão)**.
+  Atividade Prática só no Bloco 2 (Aulas 1 a 4) — slide único de
+  enunciado individual, resolvida em casa e entregue junto com o
+  trabalho final (Aula 6). Em sala, a disciplina é online: **toda
+  atividade dada em aula é dirigida pelo professor** (enunciado +
+  resposta nos slides seguintes); **sem trabalho em grupo** fora do
+  Instrumento Avaliativo 2.
 - [`slide-templates.md`](slide-templates.md) — snippets XML prontos para
   os layouts mais usados (cabeçalho Aula 1, capa, transição, conceito,
   stat callout, comparação 2 colunas, diagrama, citação, referências
@@ -194,19 +201,22 @@ Antes de tocar em XML, escreva uma tabela com:
 Atenção à **diferença entre Bloco 1 e Bloco 2** (ver
 `pedagogical-structure.md`):
 
-- **Bloco 1 das Aulas 2 a 5** abre com **correção comentada** da
-  atividade entregue no Bloco 2 da aula anterior. Bloco 1 **não** tem
-  Atividade Prática nova. A correção ocupa **5 slides**: 1 transição
-  + 1 recap + **3 slides de correção (exatamente 1 por questão, na
-  ordem original Q1, Q2, Q3)**.
+- **Bloco 1 das Aulas 2 a 5** entra direto no conteúdo novo. **Não há
+  correção comentada** da atividade anterior — as 4 Atividades
+  Práticas são entregues em conjunto, junto com o trabalho final, na
+  Aula 6.
 - **Bloco 2 das Aulas 1 a 4** fecha com **Atividade Prática N** em **um
   único slide**, que tem **exatamente 3 questões numeradas (Q1, Q2,
-  Q3)** e instruções de entrega. Bloco 2 das Aulas 5 e 6 não tem
+  Q3)**. É um enunciado individual, resolvido em casa pelo aluno (sem
+  slides de resposta dirigida no deck). Bloco 2 das Aulas 5 e 6 não tem
   Atividade.
-- **Aula 1 · Bloco 1** é o único bloco do curso que não tem nem
-  correção no início nem atividade no fim.
-- O número (Q1, Q2, Q3) e a ordem das 3 questões definidas no Bloco 2 são
-  **preservados** nos 3 slides de correção do Bloco 1 da aula seguinte.
+- **Aula 1 · Bloco 1** mantém os slots iniciais para apresentar a
+  disciplina, o caso XY&A e o trabalho final.
+- **Disciplina online + atividades dirigidas:** qualquer exercício
+  dirigido, mini-caso ou discussão guiada que apareça no fluxo de
+  conteúdo é apresentado como **enunciado seguido de resposta nos
+  slides seguintes** (1 a 3 slides). Sem trabalho em grupo entre
+  alunos (a única exceção é o Instrumento Avaliativo 2, na Aula 6).
 
 Confira contra `pedagogical-structure.md`. O alvo é **exatamente 40
 slides por bloco**. Se um tópico do plano gerar 6–10 slides, use 1
@@ -387,13 +397,13 @@ iterativo de correção visual".
 - [ ] Cada conceito relevante tem citação `Autor (ano)` no rodapé interno.
 - [ ] Slide consolidado de referências antes do "Obrigado".
 - [ ] **Layouts canônicos:** agenda, objetivos, transição, atividade,
-      correção (quando houver), síntese e encerramento **espelham Aula 1**
-      (`layout-canonical.md`); slides de conteúdo com H1 têm **faixa amarela**
-      sob o título.
-- [ ] **Atividade Prática só aparece em Bloco 2 (Aulas 1 a 4); nunca em Bloco 1.** É **um único slide**.
+      síntese e encerramento **espelham Aula 1** (`layout-canonical.md`);
+      slides de conteúdo com H1 têm **faixa amarela** sob o título.
+- [ ] **Atividade Prática só aparece em Bloco 2 (Aulas 1 a 4); nunca em Bloco 1.** É um **slide único individual**.
 - [ ] **Toda Atividade Prática tem exatamente 3 questões numeradas (Q1, Q2, Q3).**
-- [ ] **Bloco 1 das Aulas 2 a 5 começa com correção da atividade do Bloco 2 anterior.**
-- [ ] **A correção do Bloco 1 (Aulas 2 a 5) tem 3 slides dedicados, 1 por questão, na mesma ordem da atividade.**
+- [ ] **Atividade Prática indica "Entrega junto com o trabalho final (Aula 6)"; sem slides de correção/resposta no deck.**
+- [ ] **Sem atividades em grupo no deck (única exceção: Instrumento Avaliativo 2, na Aula 6).**
+- [ ] **Todo exercício/discussão/mini-caso dirigido em sala vem como enunciado + resposta comentada nos slides seguintes (1 a 3 slides).**
 - [ ] **Faixa amarela canônica** sob todo H1, com altura `54900` EMU.
 - [ ] **Combinações de cor proibidas evitadas:** nenhum texto amarelo sobre fundo navy (use branco); nenhum texto navy sobre fundo amarelo (use branco). Cards brancos têm borda navy `w=12700`.
 - [ ] **Mini-caso prático** apresentado antes de formalizar cada novo método (regra 9).

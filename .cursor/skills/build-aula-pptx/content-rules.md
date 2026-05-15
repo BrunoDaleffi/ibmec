@@ -4,9 +4,10 @@
 
 Use **exatamente** os mesmos títulos de slide da Aula 1 para os tipos
 canônicos, salvo correção explícita do professor. Exemplos: **Agenda do
-Bloco**, **Objetivos de Aprendizagem**, **Atividade Prática N**,
-**Referências do bloco**. A lista completa e o layout associado estão em
-[`layout-canonical.md`](layout-canonical.md).
+Bloco**, **Objetivos de Aprendizagem**, **Atividade Prática N**
+(individual, slide único, com subtítulo `Entrega junto com o trabalho
+final (Aula 6)`), **Referências do bloco**. A lista completa e o layout
+associado estão em [`layout-canonical.md`](layout-canonical.md).
 
 ## Fidelidade ao plano (regra 9)
 
@@ -141,6 +142,36 @@ discretas dos slides anteriores; é a consolidação.
 - Exercícios práticos sobre XY&A.
 - Slide de objetivos de aprendizagem.
 - Menções internas ao caso XY&A (que é fictício, criado para a disciplina).
+
+## Atividades em sala: regras invioláveis
+
+A disciplina é **online** e a política do Instrumento Avaliativo 1
+mudou. Daí decorrem duas regras que valem para todo deck:
+
+1. **Sem atividade em grupo, exceto o Instrumento Avaliativo 2.**
+   Toda Atividade Prática (Instrumento 1) é **individual**. Discussões
+   coletivas, exercícios e dinâmicas em sala **não** podem exigir
+   trabalho em grupo entre alunos. Use linguagem na primeira pessoa
+   do singular ("você vai…") nos enunciados, não "discutam em grupos
+   de 4 e apresentem".
+2. **Toda atividade dada em aula é dirigida pelo professor.** O slide
+   de enunciado é seguido por **1 a 3 slides com a resolução**
+   comentada — não é deixado tempo para o aluno fazer em silêncio.
+   Vale para exercícios dirigidos, discussões guiadas e mini-casos
+   embutidos no fluxo de conteúdo. **Única exceção:** o slide único
+   de Atividade Prática N no fim do Bloco 2 (Aulas 1–4), que é
+   resolvido em casa e entregue com o trabalho final.
+
+Como aplicar nos slides:
+
+- ✅ "Exercício dirigido: mapeie as variáveis necessárias para
+  responder à pergunta abaixo." → **slide seguinte** já traz a
+  resposta-modelo comentada pelo professor.
+- ✅ "Você analisaria primeiro a média ou a mediana? Por quê?" →
+  **slide seguinte** mostra a resposta com analogia jurídica.
+- ❌ "Em duplas, discutam por 5 minutos e tragam para o grupão." →
+  proibido (modalidade online + sem grupo).
+- ❌ Slide com "Atividade em sala" sem o slide-resposta logo a seguir.
 
 ## Cuidados específicos da disciplina
 

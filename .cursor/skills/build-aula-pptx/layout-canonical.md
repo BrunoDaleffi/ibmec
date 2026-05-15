@@ -158,7 +158,6 @@ idempotente do build script:
 | Conexão / "Voltando do intervalo" | `image2.png` | Idem. |
 | Síntese, Ponte, Referências | `image2.png` | Idem. |
 | Atividade Prática | `image2.png` | Idem. |
-| Slides de correção da atividade (Q1, Q2, Q3) | `image2.png` | Idem. |
 | Demais slides de **conteúdo** (conceito, stat, tabela, comparação, etc.) | `image2.png` | Idem. |
 
 ### Equivalência template ↔ `.pptx` final
@@ -300,7 +299,7 @@ Use exatamente esta redação por tipo de slide:
 | Referências | `Fontes citadas ao longo do conteúdo` |
 | Conexão (B1) | `Como este bloco se conecta ao que vocês vão apresentar na Aula 6` (ou variante coerente com o tema) |
 | Conexão / "Voltando do intervalo" (B2) | `Onde paramos no Bloco 1` |
-| Atividade Prática | `Entrega até a Aula N+1` |
+| Atividade Prática | `Entrega junto com o trabalho final (Aula 6)` |
 
 ---
 
@@ -565,37 +564,45 @@ Slide-fonte: `aula1_bloco2/slide42.xml`. **Fundo:** `image1.png`.
 | Título "Fim da Aula N" | `822950` | `914400` | `5486400` | `702600` | `3600` | Arial Black | `#1B2A4A` |
 | Faixa amarela | `822950` | `1661173` | `1828800` | `52800` | — | — | `#E8A317` |
 | "Lembrete:" | `822950` | `1836884` | `5486400` | `351300` | `1600` | Arial | `#E8A317` |
-| Linha de entrega "Entregar a Atividade N até a próxima aula." | `822950` | `2188307` | `5486400` | `351300` | `1400` | Arial | `#666666` |
+| Linha de entrega "Atividade N: responda em casa e entregue junto com o trabalho final (Aula 6)." | `822950` | `2188307` | `5486400` | `351300` | `1400` | Arial | `#666666` |
 | "Próxima aula: …" | `822950` | `2697950` | `6915900` | `351300` | `1500` | Arial | `#1B2A4A` |
 
 Fórmula textual:
 
 ```
 Fim da Aula N
-Lembrete: Entregar a Atividade N até a próxima aula.
+Lembrete: Atividade N — responda em casa e entregue junto com o trabalho final (Aula 6).
 Próxima aula: <ementa em uma frase>.
 ```
 
 > Em Aulas 5 e 6 (Bloco 2 sem atividade nova), trocar o bloco
 > "Lembrete/Atividade" pela respectiva combinação ("Lembrete: prepare o
-> trabalho final" na Aula 5 e "Encerramento da disciplina" na Aula 6).
+> trabalho final e a entrega consolidada das 4 atividades" na Aula 5 e
+> "Encerramento da disciplina" na Aula 6).
 
 ---
 
 ## 12. Atividade Prática (apenas Bloco 2 das Aulas 1 a 4)
 
 Slide-fonte: `aula1_bloco2/slide38.xml`. Cabeçalho padrão (H1 + faixa
-amarela). Subtítulo amarelo "Entrega até a Aula N+1" — note que o
-**subtítulo amarelo da atividade fica em `y=1102612`** (mais próximo do
-H1 do que nos demais slides estruturais), porque o card navy começa
-logo abaixo a `y=1522612`.
+amarela). Subtítulo amarelo "Entrega junto com o trabalho final (Aula
+6)" — note que o **subtítulo amarelo da atividade fica em
+`y=1102612`** (mais próximo do H1 do que nos demais slides
+estruturais), porque o card navy começa logo abaixo a `y=1522612`.
+
+> **Atividade individual.** É um **slide único** com o enunciado das 3
+> questões. O aluno responde em casa e entrega as 4 atividades em
+> conjunto, junto com o trabalho final, na Aula 6. **Não** há slides de
+> resposta dirigida no deck — esse padrão (enunciado + resposta nos
+> slides seguintes) vale apenas para os exercícios dirigidos no fluxo
+> de conteúdo.
 
 Corpo (medidas extraídas do gold standard `aula1_bloco2/slide38.xml`):
 
 | Camada | off x | off y | cx | cy | sz | Fonte | Cor |
 |---|---|---|---|---|---|---|---|
 | H1 "Atividade Prática N" | `750000` | `500000` | `6960600` | `900000` | `2400` | Arial Black | `#1B2A4A` |
-| Subtítulo amarelo "Entrega até a Aula N+1" | `750000` | `1102612` | `6960600` | `399900` | `1400` | Arial | `#E8A317` |
+| Subtítulo amarelo "Entrega junto com o trabalho final (Aula 6)" | `750000` | `1102612` | `6960600` | `399900` | `1400` | Arial | `#E8A317` |
 | Faixa amarela canônica | `750005` | `905100` | `1524600` | `54900` | — | — | `#E8A317` |
 | Card navy alto (`roundRect`, `adj≈6500`, fill `#1B2A4A`) | `750000` | `1522612` | `6960600` | `800100` | — | — | `#1B2A4A` |
 | Título da atividade dentro do card | `925479` | `1592612` | `6609600` | `660000` | `1700` | Arial Black | `#E8A317` |
@@ -610,28 +617,29 @@ Pergunta 2. <enunciado em até 2 linhas>
 Pergunta 3. <enunciado em até 2 linhas>
 ```
 
-Speaker notes do slide devem trazer instrução de entrega, peso da
-atividade na média (3,0 pts em 4 atividades) e critério de correção
-por questão.
+Speaker notes do slide devem trazer instrução de entrega (em casa,
+junto com o trabalho final na Aula 6), peso da atividade na média
+(3,0 pts em 4 atividades) e critério de correção por questão.
 
 ---
 
-## 13. Slides de correção da atividade (apenas Bloco 1 das Aulas 2 a 5)
+## 13. Exercício dirigido em sala (qualquer aula que tenha exercício no fluxo de conteúdo)
 
-Estrutura **fixa de 5 a 6 slides** abrindo o Bloco 1 (antes do conteúdo
-novo da aula). Cabeçalho padrão (seção 2) em todos eles.
+A disciplina é online; **não há trabalho silencioso em sala** nem
+"corrige depois". Quando um exercício, mini-caso ou pergunta dirigida
+aparece no deck, ele vem como uma **mini-sequência de 2 a 4 slides**:
 
-| # | Tipo | Fundo | Título | Conteúdo |
-|---|---|---|---|---|
-| 1 | Transição "Atividade N: o que aprendemos" | `image1.png` | Padrão de transição (seção 4), sem número | Subtítulo: `Correção comentada das 3 questões e ponte para o método desta aula` |
-| 2 | Recap | `image2.png` | `O que foi pedido na Atividade N` | Subtítulo amarelo `Atividade Prática N (Bloco 2 da Aula N) · 3 questões`. Lembrete das 3 questões na ordem original e do peso. |
-| 3 | Correção Q1 | `image2.png` | `Atividade N · Questão 1` | Bloco superior: enunciado curto. Bloco inferior: 2–4 bullets (caminho de resposta, exemplo XY&A, armadilhas). |
-| 4 | Correção Q2 | `image2.png` | `Atividade N · Questão 2` | Mesmo template. |
-| 5 | Correção Q3 | `image2.png` | `Atividade N · Questão 3` | Mesmo template. |
-| 6 | Insight / ponte | `image2.png` | Frase-síntese + gancho para o conteúdo novo | Conecta o que foi corrigido ao próximo tópico do Bloco 1. |
+| # | Tipo | Fundo | Função |
+|---|---|---|---|
+| 1 | Enunciado dirigido | `image2.png` | Cabeçalho padrão. H1: pergunta ou tarefa. Subtítulo amarelo opcional `Vamos pensar juntos`. Corpo: contexto curto + pergunta destacada (card pastel `#FCE5CD` ou caixa `#F4F4F4`). |
+| 2 | Resposta-modelo | `image2.png` | Mesmo H1 do enunciado, com tag `Resposta` (chip amarelo). Corpo: caminho de raciocínio em 2–4 bullets ou um diagrama curto. |
+| 3 | Insight / armadilha (opcional) | `image2.png` | Quando couber, slide adicional destacando a armadilha estatística ou o reframing jurídico. |
+| 4 | Ponte de volta ao conteúdo (opcional) | `image2.png` | Conecta a resposta ao próximo conceito do tópico. |
 
-Os 3 slides de correção (Q1, Q2, Q3) **espelham a numeração e a ordem**
-das 3 questões da Atividade Prática do Bloco 2 anterior.
+**Sempre** o slide de enunciado é seguido **imediatamente** pelo slide
+de resposta. Sem deixar para "depois". Atividade individual sem
+trabalho em grupo entre alunos. Vale para todos os blocos das Aulas 1
+a 6.
 
 ---
 
@@ -738,8 +746,8 @@ o slide-fonte indicado:
 - [ ] **Ponte** confronta com `aula1_bloco1/slide47.xml` (seção 9).
 - [ ] **Referências** confronta com `aula1_bloco1/slide48.xml` (seção 10).
 - [ ] **Encerramento** confronta com `aula1_bloco1/slide49.xml` (B1) ou `aula1_bloco2/slide42.xml` (B2) (seção 11).
-- [ ] **Atividade Prática** (apenas B2 das Aulas 1–4) confronta com `aula1_bloco2/slide38.xml` (seção 12).
-- [ ] **Slides de correção** (apenas B1 das Aulas 2–5) seguem a sequência fixa da seção 13.
+- [ ] **Atividade Prática** (apenas B2 das Aulas 1–4) confronta com `aula1_bloco2/slide38.xml` (seção 12). Slide único, individual, subtítulo `Entrega junto com o trabalho final (Aula 6)`. Sem slides de correção/resposta no deck.
+- [ ] **Exercícios dirigidos** no fluxo de conteúdo seguem o padrão da seção 13: enunciado seguido **imediatamente** por slide de resposta-modelo. Sem trabalho em grupo entre alunos.
 - [ ] **Slides de conteúdo com H1** trazem a faixa amarela canônica nas medidas da seção 2.
 - [ ] **Fundos** seguem o mapa da seção 1 (`image1` em capa/transição/encerramento; `image2` no resto).
 - [ ] Nenhum slide só de texto: todo slide tem ao menos 1 elemento visual.
